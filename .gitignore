@@ -1,6 +1,7 @@
-#Ingorar carpeta node_modules
+#ignorar la carpeta node_modules
 node_modules/
-#Ingonora la carpte bin
+#ignorar la carpeta bin
 bin/
-#Ingnora objetos de compilacion
+#ignorar obj 
 obj/
+
