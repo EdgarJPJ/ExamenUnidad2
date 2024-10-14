@@ -23,43 +23,10 @@
     const btn = document.getElementById('btnGeo');
     let map;
 
- 
     const connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
 
     connection.start().catch(err => console.error(err.toString()));
 
-   
-    function getUbicacion() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            lugar.innerText = "No se puede obtener la ubicación";
-        }
-    }
-
- 
-    function showPosition(position) {
-        lugar.innerText = `Latitud: ${position.coords.latitude}\nLongitud: ${position.coords.longitude}`;
-
-        
-        connection.invoke("SendLocation", position.coords.latitude, position.coords.longitude)
-            .catch(err => console.error(err.toString()));
-
-        if (!map) {
-            map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 15);
-
-      
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        }
-
-      
-        L.marker([position.coords.latitude, position.coords.longitude], { draggable: true }).addTo(map);
-    }
-
-  
     function showError(error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -77,7 +44,20 @@
         }
     }
 
-    btn.addEventListener('click', getUbicacion);
+    function getUbicacion() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
+                L.marker([latitude, longitude]).addTo(map);
+            }, showError);
+        } else {
+            lugar.innerText = "Geolocalización no es soportada por este navegador.";
+        }
+    }
+
+    window.onload = getUbicacion;
 
     connection.on("ReceiveLocation", (latitude, longitude) => {
         console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
