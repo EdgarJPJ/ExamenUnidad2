@@ -1,0 +1,6 @@
+#Ingorar carpeta node_modules
+node_modules/
+#Ingonora la carpte bin
+bin/
+#Ingnora objetos de compilacion
+obj/

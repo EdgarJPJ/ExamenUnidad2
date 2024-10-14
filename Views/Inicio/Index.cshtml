@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = "Geolocalización con SignalR";
+}
+
+<h3>Ejemplo de geolocalización</h3>
+<p id="lugar"></p>
+<button id="btnGeo" type="button">Obtener ubicación</button>
+<div id='map'></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="~/js/signalr.js"></script>
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%; 
+    }
+</style>
+
+<script>
+    let lugar = document.getElementById('lugar');
+    const btn = document.getElementById('btnGeo');
+    let map;
+
+ 
+    const connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
+
+    connection.start().catch(err => console.error(err.toString()));
+
+   
+    function getUbicacion() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            lugar.innerText = "No se puede obtener la ubicación";
+        }
+    }
+
+ 
+    function showPosition(position) {
+        lugar.innerText = `Latitud: ${position.coords.latitude}\nLongitud: ${position.coords.longitude}`;
+
+        
+        connection.invoke("SendLocation", position.coords.latitude, position.coords.longitude)
+            .catch(err => console.error(err.toString()));
+
+        if (!map) {
+            map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 15);
+
+      
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+        }
+
+      
+        L.marker([position.coords.latitude, position.coords.longitude], { draggable: true }).addTo(map);
+    }
+
+  
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                lugar.innerText = "El usuario denegó la solicitud de geolocalización.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                lugar.innerText = "La información de ubicación no está disponible.";
+                break;
+            case error.TIMEOUT:
+                lugar.innerText = "La solicitud para obtener la ubicación del usuario ha caducado.";
+                break;
+            case error.UNKNOWN_ERROR:
+                lugar.innerText = "Un error desconocido ocurrió.";
+                break;
+        }
+    }
+
+    btn.addEventListener('click', getUbicacion);
+
+    connection.on("ReceiveLocation", (latitude, longitude) => {
+        console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
+        L.marker([latitude, longitude]).addTo(map);
+    });
+</script>
