@@ -1,0 +1,6 @@
+#ignorar la carpeta node_modules
+node_modules/
+#ignorar la carpeta bin
+bin/
+#ignorar obj 
+obj/
