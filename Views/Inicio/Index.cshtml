@@ -2,65 +2,64 @@
     ViewData["Title"] = "Geolocalización con SignalR";
 }
 
-<h3>Ejemplo de geolocalización</h3>
-<p id="lugar"></p>
-<button id="btnGeo" type="button">Obtener ubicación</button>
-<div id='map'></div>
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signalr/3.1.11/signalr.min.js"></script>
+</head>
+<body>
+    <h1>Ubicación Actual</h1>
+    <div id="map" style="height: 400px;"></div>
+    <script>
+        var map = L.map('map').setView([0, 0], 2);
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="~/js/signalr.js"></script>
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-<style>
-    #map {
-        height: 400px;
-        width: 100%; 
-    }
-</style>
-
-<script>
-    let lugar = document.getElementById('lugar');
-    const btn = document.getElementById('btnGeo');
-    let map;
-
-    const connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
-
-    connection.start().catch(err => console.error(err.toString()));
-
-    function showError(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                lugar.innerText = "El usuario denegó la solicitud de geolocalización.";
-                break;
-            case error.POSITION_UNAVAILABLE:
-                lugar.innerText = "La información de ubicación no está disponible.";
-                break;
-            case error.TIMEOUT:
-                lugar.innerText = "La solicitud para obtener la ubicación del usuario ha caducado.";
-                break;
-            case error.UNKNOWN_ERROR:
-                lugar.innerText = "Un error desconocido ocurrió.";
-                break;
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    console.log("El usuario denegó la solicitud de geolocalización.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    console.log("La información de ubicación no está disponible.");
+                    break;
+                case error.TIMEOUT:
+                    console.log("La solicitud para obtener la ubicación del usuario ha caducado.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    console.log("Un error desconocido ocurrió.");
+                    break;
+            }
         }
-    }
 
-    function getUbicacion() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
-                L.marker([latitude, longitude]).addTo(map);
-            }, showError);
-        } else {
-            lugar.innerText = "Geolocalización no es soportada por este navegador.";
+        function getUbicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
+                    L.marker([latitude, longitude]).addTo(map);
+                    map.setView([latitude, longitude], 13);
+                }, showError);
+            } else {
+                console.log("Geolocalización no es soportada por este navegador.");
+            }
         }
-    }
 
-    window.onload = getUbicacion;
+        window.onload = getUbicacion;
 
-    connection.on("ReceiveLocation", (latitude, longitude) => {
-        console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
-        L.marker([latitude, longitude]).addTo(map);
-    });
-</script>
+        var connection = new signalR.HubConnectionBuilder().withUrl("/yourHubUrl").build();
+
+        connection.on("ReceiveLocation", (latitude, longitude) => {
+            console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
+            L.marker([latitude, longitude]).addTo(map);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+</body>
+</html>
