@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Hubs
+namespace ExamenUnidad2.Hubs
 {
     public class LocationHub : Hub
     {
