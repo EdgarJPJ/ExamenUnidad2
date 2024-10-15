@@ -11,11 +11,11 @@ namespace ExamenUnidad2.Models
         private string? nombreCliente { get; set; }
         private string? fallo { get; set; }
 
-        private string? longitude { get; set; }
+        private string? longitud { get; set; }
 
-        private string? latitude { get; set; }
+        private string? latitud { get; set; }
 
-        private string? estado { get; set; } //pendiente, en proceso, resuelto , cancelad
+        private string? estado { get; set; } 
 
         private string? prioridad { get; set; }
 
@@ -86,16 +86,16 @@ namespace ExamenUnidad2.Models
             set => tecnico = value;
 
         }
-        public string? Longitude
+        public string? Longitud
         {
-            get => longitude;
-            set => longitude = value;
+            get => longitud;
+            set => longitud = value;
         }
 
-        public string? Latitude
+        public string? Latitud
         {
-            get => latitude;
-            set => latitude = value;
+            get => latitud;
+            set => latitud = value;
 
         }
     }

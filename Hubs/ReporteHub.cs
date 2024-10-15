@@ -18,7 +18,7 @@ namespace ExamenUnidad2.Hubs
         
         public async Task SendReporte(string noombreGrupo, Reporte reporte)
         {
-            await Clients.Group(noombreGrupo).SendAsync("EnviarReporte", reporte);
+            await Clients.Group(noombreGrupo).SendAsync("RecibirReporte", reporte);
         }
 
     }

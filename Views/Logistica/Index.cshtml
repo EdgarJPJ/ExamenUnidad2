@@ -39,17 +39,17 @@
 <script src="~/js/signalR.js"></script>
 
 <script>
+    
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
 
     connection.start().then(() => {
+        connection.invoke("AddToGroup", "Logistica").catch(err => console.error(err.toString()));
         console.log("Conexión exitosa");
-    }).catch((error) => {
-        console.log("Error al realizar la conexión: ", error);
-    });
-    
-    connection.on("ReceiveReporte", (reporte) => {
-        console.log("Reporte recibido: ", reporte);
+    }).catch(err => console.error(err.toString()));
+
+    connection.on("RecibirReporte", (reporte) => {
+        console.log("Reporte: ", reporte);    
     });
 </script>
