@@ -191,6 +191,10 @@
                     console.log(json);
                     if (json.mensaje === "Reporte agregado") {
                         alert("Reporte enviado exitosamente");
+                        document.getElementById('form-container').style.display = 'none';
+                        boton.disabled = false;
+                        nombreCliente.value = "";
+                        fallo.value = "";
                     } else {
                         alert("Error al enviar el reporte: " + json.mensaje);
                     }
@@ -201,7 +205,7 @@
                 });
             connection.invoke("SendReporte", "Logistica", reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
         });
-            
+
     </script>
 </body>
 
