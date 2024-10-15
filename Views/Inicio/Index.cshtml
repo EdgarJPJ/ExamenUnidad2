@@ -7,18 +7,87 @@
 
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="~/js/signalR.js"></script>
+    <style>
+        #map {
+            height: 250px;
+            width: 100%;
+        }
+
+        #form-container {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Raccoon Mobile service</h1>
-    <br>
-    <div class="row"></div>
-    <h2>¿Tienes problemas con tu línea?</h2>
-    <button class="btn primary " id="Ubicacion">Enviar mi ubicación</button>
-    <br>
-    <div class="rounded-3" id="map" style="height: 250px; width: 300px;"></div>
+    <div>
+        <h2>¿Tienes problemas con tu línea?</h2>
+        <button class="btn primary" id="Ubicacion">Enviar mi ubicación</button>
+        <br>
+        <div id="map" class="rounded-3"></div>
+         <div id="form-container" class="mt-5">
+            <h2>Registro de Datos del Cliente</h2>
+            <form>
+                <div class="mb-3">
+                    <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
+                    <input type="text" class="form-control" id="nombreCliente" placeholder="Ingrese el nombre del cliente" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fallo" class="form-label">Fallo</label>
+                    <textarea class="form-control" id="fallo" rows="3" placeholder="Describa el fallo" required></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="latitude" class="form-label">Latitud</label>
+                        <input type="text" class="form-control" id="latitude" placeholder="Ingrese la latitud" required readonly>
+                    </div>
+                    <div class="col">
+                        <label for="longitude" class="form-label">Longitud</label>
+                        <input type="text" class="form-control" id="longitude" placeholder="Ingrese la longitud" required readonly>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" required>
+                        <option selected disabled>Seleccione el estado</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en_proceso">En proceso</option>
+                        <option value="resuelto">Resuelto</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="prioridad" class="form-label">Prioridad</label>
+                    <select class="form-select" id="prioridad" required>
+                        <option selected disabled>Seleccione la prioridad</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaEnvio" class="form-label">Fecha de Envío</label>
+                    <input type="date" class="form-control" id="fechaEnvio" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
+                    <input type="date" class="form-control" id="fechaRespuesta">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
     </div>
     <script>
         const boton = document.getElementById("Ubicacion");
@@ -35,8 +104,8 @@
         boton.addEventListener("click", () => {
             getubicacion();
             boton.disabled = true;
+            document.getElementById('form-container').style.display = 'block';
         });
-
 
         function showPosition(position) {
             latitud = position.coords.latitude;
@@ -48,7 +117,6 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-
             L.marker([latitud, longitud]).addTo(map)
                 .bindPopup('Estas aquí')
                 .openPopup();
@@ -57,21 +125,19 @@
         function errorPosition(error) {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    lugar.innerText = "El usuario no permitió la geolocalización";
+                    alert("El usuario no permitió la geolocalización");
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    lugar.innerText = "La información de ubicación no está disponible";
+                    alert("La información de ubicación no está disponible");
                     break;
                 case error.TIMEOUT:
-                    lugar.innerText = "La solicitud para obtener la ubicación del usuario ha expirado";
+                    alert("La solicitud para obtener la ubicación del usuario ha expirado");
                     break;
                 case error.UNKNOWN_ERROR:
-                    lugar.innerText = "Un error desconocido ocurrió";
+                    alert("Un error desconocido ocurrió");
                     break;
             }
         }
-
-
 
         var connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
 

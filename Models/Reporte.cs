@@ -11,11 +11,11 @@ namespace ExamenUnidad2.Models
         private string? nombreCliente { get; set; }
         private string? fallo { get; set; }
 
-        private string longitude { get; set; }
+        private string? longitude { get; set; }
 
-        private string latitude { get; set; }
-        
-        private string? estado{ get; set; }
+        private string? latitude { get; set; }
+
+        private string? estado { get; set; } //pendiente, en proceso, resuelto , cancelad
 
         private string? prioridad { get; set; }
 
@@ -23,7 +23,7 @@ namespace ExamenUnidad2.Models
 
         private string? fechaRespuesta { get; set; }
 
-        private string? fechaResolucion{ get; set; }
+        private string? fechaResolucion { get; set; }
 
         private string? tecnico { get; set; }
 
@@ -36,8 +36,8 @@ namespace ExamenUnidad2.Models
 
         public string? NombreCliente
         {
-           get=> nombreCliente;
-            set=> nombreCliente = value;
+            get => nombreCliente;
+            set => nombreCliente = value;
         }
 
         public string? Fallo
@@ -48,8 +48,8 @@ namespace ExamenUnidad2.Models
 
         public string? Estado
         {
-            get=> estado;
-            set=> estado = value;
+            get => estado;
+            set => estado = value;
         }
 
         public string? Prioridad
@@ -61,8 +61,8 @@ namespace ExamenUnidad2.Models
 
         public string? FechaEnvio
         {
-            get=> fechaEnvio;
-            set=> fechaEnvio = value;
+            get => fechaEnvio;
+            set => fechaEnvio = value;
 
         }
 
@@ -75,28 +75,28 @@ namespace ExamenUnidad2.Models
 
         public string? FechaResolucion
         {
-           get=> fechaResolucion;
-            set=> fechaResolucion = value;
+            get => fechaResolucion;
+            set => fechaResolucion = value;
 
         }
 
         public string? Tecnico
         {
-           get=> tecnico;
-            set=> tecnico = value;
-        
+            get => tecnico;
+            set => tecnico = value;
+
         }
-        public string Longitude
+        public string? Longitude
         {
             get => longitude;
             set => longitude = value;
         }
 
-        public string Latitude
+        public string? Latitude
         {
             get => latitude;
             set => latitude = value;
-            
+
         }
     }
 }
