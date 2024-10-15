@@ -54,25 +54,17 @@
 
 
 
-                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="button" class="btn btn-primary" id="enviar">Registrar</button>
             </form>
         </div>
     </div>
         <script>
-        let Reporte = {
-            nombreCliente: "",
-            fallo: "",
-            longitude: 0,
-            latitude: 0,
-            estado: "N/A",
-            prioridad: "",
-            fechaEnvio: "",
-            fechaRespuesta: "",
-            fechaResolucion: "",
-            tecnico:"N/A"
-        };
+
         const boton = document.getElementById("Ubicacion");
         const otraLinea = document.getElementById("ReportarOtraLinea");
+        const enviar = document.getElementById("enviar");
+        const nombreCliente = document.getElementById("nombreCliente");
+        const fallo = document.getElementById("fallo");
 
         otraLinea.disabled = true;
         let latitud;
@@ -131,7 +123,7 @@
             marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
                 .bindPopup('Nueva ubicación')
                 .openPopup();
-            latitud = e.latlng.lat;s
+            latitud = e.latlng.lat;
             longitud = e.latlng.lng;
             
         }
@@ -153,10 +145,55 @@
             }
         }
 
+        enviar.addEventListener("click", () => {
+        const reporte = {
+            id : 0,
+            longitude: longitud,
+            latitude: latitud,
+            nombreCliente: nombreCliente.value,
+            fallo: fallo.value,
+            estado: "N/A",
+            prioridad: "N/A",
+            fechaEnvio: new Date().toISOString(),
+            fechaRespuesta: "N/A",
+            fechaResolucion: "N/A",
+            tecnico: "N/A"
+        };
+
+        fetch("http://localhost:5157/Transacciones/agregarReporte", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(reporte)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(json => {
+            console.log(json);
+            if (json.mensaje === "Reporte agregado") {
+                alert("Reporte enviado exitosamente");
+            } else {
+                alert("Error al enviar el reporte: " + json.mensaje);
+            }
+        })
+        .catch(error => {
+            console.error("Error al enviar el reporte:", error);
+            alert("Error al enviar el reporte: " + error.message);
+        });
+    });
+
         const connection = new signalR.HubConnectionBuilder().withUrl("/reporteHub").build();
     connection.start().then(() => {
             connection.invoke("AddToGroup", "Logistica").catch(err => console.error(err.toString()));
+            console.log("Conexión exitosa");
         }).catch(err => console.error(err.toString()));
+        
     </script>
 </body>
 

@@ -8,6 +8,7 @@ namespace ExamenUnidad2.services
 {
     public class Transacciones : ITransacciones
     {
+
         List<Reporte> reportes = new List<Reporte>();
 
         public Transacciones()
@@ -15,11 +16,15 @@ namespace ExamenUnidad2.services
             reportes = new List<Reporte>();
         }
 
-        public void agregar(Reporte r)
+       public bool agregar(Reporte reporte)
+    {
+        if (reporte.Id == 0)
         {
-            reportes.Add(r);
+            reporte.Id = reportes.Count + 1;
         }
-
+        reportes.Add(reporte);
+        return true;
+    }
         public List<Reporte> consultar()
         {
             return reportes;
@@ -51,5 +56,5 @@ namespace ExamenUnidad2.services
             return false;
         }
     }
-    }
+}
 

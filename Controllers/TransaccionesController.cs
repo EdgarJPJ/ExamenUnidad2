@@ -26,9 +26,18 @@ namespace ExamenUnidad2.Controllers
 
         [HttpPost]
         public IActionResult agregarReporte([FromBody] Reporte r){
-             baseDatos.agregar(r);
-                return Json(new {mensaje = "Reporte agregado" });
-        } 
+            if (r == null)
+            {
+                return Json(new { mensaje = "Reporte no puede ser nulo" });
+            }
+
+            if (baseDatos.agregar(r))
+            {
+                return Json(new { mensaje = "Reporte agregado" });
+            }
+
+            return Json(new { mensaje = "Error al agregar el reporte" });
+        }
 
         [HttpPost]
         public IActionResult actualizarReporte([FromBody] Reporte r){

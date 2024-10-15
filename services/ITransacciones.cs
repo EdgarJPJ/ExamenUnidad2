@@ -8,7 +8,7 @@ namespace ExamenUnidad2.services
 {
     public interface ITransacciones
     {
-        public void agregar(Reporte r);
+        public bool agregar(Reporte r);
         
         public List<Reporte> consultar();
 
