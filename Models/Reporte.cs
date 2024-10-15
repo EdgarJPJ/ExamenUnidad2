@@ -10,6 +10,10 @@ namespace ExamenUnidad2.Models
         private int id { get; set; }
         private string? nombreCliente { get; set; }
         private string? fallo { get; set; }
+
+        private string longitude { get; set; }
+
+        private string latitude { get; set; }
         
         private string? estado{ get; set; }
 
@@ -21,7 +25,8 @@ namespace ExamenUnidad2.Models
 
         private string? fechaResolucion{ get; set; }
 
-        private string? encargado { get; set; }
+        private string? tecnico { get; set; }
+
 
         public int Id
         {
@@ -75,15 +80,23 @@ namespace ExamenUnidad2.Models
 
         }
 
-        public string? Encargado
+        public string? Tecnico
         {
-           get=> encargado;
-            set=> encargado = value;
-        }
+           get=> tecnico;
+            set=> tecnico = value;
         
-        public override string ToString(){
-            return "Id: " + id + "Nombre Cliente: " + nombreCliente + "Fallo: " + fallo + "Estado: " + estado + "Prioridad: " + prioridad + "Fecha de Envio: " + fechaEnvio + "Fecha de Respuesta: " + fechaRespuesta + "Fecha de Resolucion: " + fechaResolucion + "Encargado: " + encargado;
+        }
+        public string Longitude
+        {
+            get => longitude;
+            set => longitude = value;
         }
 
+        public string Latitude
+        {
+            get => latitude;
+            set => latitude = value;
+            
+        }
     }
 }

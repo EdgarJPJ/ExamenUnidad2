@@ -26,6 +26,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapHub<LocationHub>("/locationHub"); 
+app.MapHub<ReporteHub>("/reporteHub");
 
 // Cambia el controlador por defecto de "Home" a "Inicio"
 app.MapControllerRoute(

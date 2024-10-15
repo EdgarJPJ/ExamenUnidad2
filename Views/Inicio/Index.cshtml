@@ -4,55 +4,76 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signalr/3.1.11/signalr.min.js"></script>
+    <script src="~/js/signalR.js"></script>
 </head>
+
 <body>
-    <h1>Ubicación Actual</h1>
-    <div id="map" style="height: 400px;"></div>
+    <h1>Raccoon Mobile service</h1>
+    <br>
+    <div class="row"></div>
+    <h2>¿Tienes problemas con tu línea?</h2>
+    <button class="btn primary " id="Ubicacion">Enviar mi ubicación</button>
+    <br>
+    <div class="rounded-3" id="map" style="height: 250px; width: 300px;"></div>
+    </div>
     <script>
-        var map = L.map('map').setView([0, 0], 2);
+        const boton = document.getElementById("Ubicacion");
+        let latitud;
+        let longitud;
+        function getubicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, errorPosition);
+            } else {
+                alert("La geolocalización no es soportada por este navegador.");
+            }
+        }
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        boton.addEventListener("click", () => {
+            getubicacion();
+            boton.disabled = true;
+        });
 
-        function showError(error) {
+
+        function showPosition(position) {
+            latitud = position.coords.latitude;
+            longitud = position.coords.longitude;
+
+            let map = L.map('map').setView([latitud, longitud], 19);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+
+            L.marker([latitud, longitud]).addTo(map)
+                .bindPopup('Estas aquí')
+                .openPopup();
+        }
+
+        function errorPosition(error) {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    console.log("El usuario denegó la solicitud de geolocalización.");
+                    lugar.innerText = "El usuario no permitió la geolocalización";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    console.log("La información de ubicación no está disponible.");
+                    lugar.innerText = "La información de ubicación no está disponible";
                     break;
                 case error.TIMEOUT:
-                    console.log("La solicitud para obtener la ubicación del usuario ha caducado.");
+                    lugar.innerText = "La solicitud para obtener la ubicación del usuario ha expirado";
                     break;
                 case error.UNKNOWN_ERROR:
-                    console.log("Un error desconocido ocurrió.");
+                    lugar.innerText = "Un error desconocido ocurrió";
                     break;
             }
         }
 
-        function getUbicacion() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
-                    L.marker([latitude, longitude]).addTo(map);
-                    map.setView([latitude, longitude], 13);
-                }, showError);
-            } else {
-                console.log("Geolocalización no es soportada por este navegador.");
-            }
-        }
 
-        window.onload = getUbicacion;
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/yourHubUrl").build();
+        var connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
 
         connection.on("ReceiveLocation", (latitude, longitude) => {
             console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
@@ -62,4 +83,5 @@
         connection.start().catch(err => console.error(err.toString()));
     </script>
 </body>
+
 </html>

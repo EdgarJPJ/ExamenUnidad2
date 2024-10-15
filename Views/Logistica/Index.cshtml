@@ -1,0 +1,25 @@
+
+<h1>Logistica de reportes</h1>
+
+<div>
+
+</div>
+
+
+<script src="~/js/signalR.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/ReporteHub")
+        .build();
+
+    connection.start().then(() => {
+        console.log("Conexión exitosa");
+    }).catch((error) => {
+        console.log("Error al realizar la conexión: ", error);
+    });
+    
+    connection.on("ReceiveReporte", (reporte) => {
+        console.log("Reporte recibido: ", reporte);
+    });
+</script>
