@@ -27,20 +27,29 @@
     <h1>Raccoon Mobile service</h1>
     <div>
         <h2>¿Tienes problemas con tu línea?</h2>
-        <button class="btn primary" id="Ubicacion">Enviar mi ubicación</button>
+        <div class="container">
+            <div class="row">
+                <div id="button-container" class="col">
+                    <button class="btn btn-primary" id="Ubicacion">Reportar</button>
+                    <button class="btn btn-secondary" id="ReportarOtraLinea">Reportar otra linea</button>
+                </div>
+            </div>
+        </div>
         <br>
         <div id="map" class="rounded-3"></div>
-         <div id="form-container" class="mt-5">
+        <div id="form-container" class="mt-5">
             <h2>Registro de Datos del Cliente</h2>
             <form>
                 <div class="mb-3">
                     <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
-                    <input type="text" class="form-control" id="nombreCliente" placeholder="Ingrese el nombre del cliente" required>
+                    <input type="text" class="form-control" id="nombreCliente"
+                        placeholder="Ingrese el nombre del cliente" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="fallo" class="form-label">Fallo</label>
-                    <textarea class="form-control" id="fallo" rows="3" placeholder="Describa el fallo" required></textarea>
+                    <textarea class="form-control" id="fallo" rows="3" placeholder="Describa el fallo"
+                        required></textarea>
                 </div>
 
 
@@ -49,10 +58,28 @@
             </form>
         </div>
     </div>
-    <script>
+        <script>
+        let Reporte = {
+            nombreCliente: "",
+            fallo: "",
+            longitude: 0,
+            latitude: 0,
+            estado: "N/A",
+            prioridad: "",
+            fechaEnvio: "",
+            fechaRespuesta: "",
+            fechaResolucion: "",
+            tecnico:"N/A"
+        };
         const boton = document.getElementById("Ubicacion");
+        const otraLinea = document.getElementById("ReportarOtraLinea");
+
+        otraLinea.disabled = true;
         let latitud;
         let longitud;
+        let map;
+        let marker;
+
         function getubicacion() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, errorPosition);
@@ -64,22 +91,49 @@
         boton.addEventListener("click", () => {
             getubicacion();
             boton.disabled = true;
+            otraLinea.disabled = false;
             document.getElementById('form-container').style.display = 'block';
+        });
+
+        otraLinea.addEventListener("click", () => {
+            if (marker) {
+                marker.remove();
+                marker = null;
+            }
+            map.on('click', onMapClick);
         });
 
         function showPosition(position) {
             latitud = position.coords.latitude;
             longitud = position.coords.longitude;
 
-            let map = L.map('map').setView([latitud, longitud], 19);
+            if (!map) {
+                map = L.map('map').setView([latitud, longitud], 19);
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            L.marker([latitud, longitud]).addTo(map)
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+            } else {
+                map.setView([latitud, longitud], 19);
+            }
+            if (marker) {
+                marker.remove();
+            }
+            marker = L.marker([latitud, longitud]).addTo(map)
                 .bindPopup('Estas aquí')
                 .openPopup();
+        }
+
+        function onMapClick(e) {
+            if (marker) {
+                marker.remove();
+            }
+            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
+                .bindPopup('Nueva ubicación')
+                .openPopup();
+            latitud = e.latlng.lat;s
+            longitud = e.latlng.lng;
+            
         }
 
         function errorPosition(error) {
@@ -99,14 +153,10 @@
             }
         }
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/locationHub").build();
-
-        connection.on("ReceiveLocation", (latitude, longitude) => {
-            console.log(`Ubicación recibida: Latitud ${latitude}, Longitud ${longitude}`);
-            L.marker([latitude, longitude]).addTo(map);
-        });
-
-        connection.start().catch(err => console.error(err.toString()));
+        const connection = new signalR.HubConnectionBuilder().withUrl("/reporteHub").build();
+    connection.start().then(() => {
+            connection.invoke("AddToGroup", "Logistica").catch(err => console.error(err.toString()));
+        }).catch(err => console.error(err.toString()));
     </script>
 </body>
 
