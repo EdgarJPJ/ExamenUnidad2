@@ -3,6 +3,36 @@
 
 <div>
 
+                    <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" required>
+                        <option selected disabled>Seleccione el estado</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en_proceso">En proceso</option>
+                        <option value="resuelto">Resuelto</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="prioridad" class="form-label">Prioridad</label>
+                    <select class="form-select" id="prioridad" required>
+                        <option selected disabled>Seleccione la prioridad</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaEnvio" class="form-label">Fecha de Envío</label>
+                    <input type="date" class="form-control" id="fechaEnvio" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
+                    <input type="date" class="form-control" id="fechaRespuesta">
+                </div>
 </div>
 
 
