@@ -10,7 +10,7 @@
                         <th>Falla</th>
                         <th>Estado</th>
                         <th>Prioridad</th>
-                        <th>Tecnico</th>
+                        <th>Técnico</th>
                     </tr>
                 </thead>
                 <tbody id="tablaReportes">
@@ -22,7 +22,6 @@
             <div class="mb-3">
                 <label for="estado" class="form-label">Estado</label>
                 <select class="form-select" id="estado" required>
-                    <option selected disabled>Seleccione el estado</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en_proceso">En proceso</option>
                     <option value="resuelto">Resuelto</option>
@@ -33,21 +32,28 @@
             <div class="mb-3">
                 <label for="prioridad" class="form-label">Prioridad</label>
                 <select class="form-select" id="prioridad" required>
-                    <option selected disabled>Seleccione la prioridad</option>
                     <option value="alta">Alta</option>
                     <option value="media">Media</option>
                     <option value="baja">Baja</option>
                 </select>
             </div>
-
             <div class="mb-3">
-                <label for="fechaEnvio" class="form-label">Fecha de Envío</label>
-                <input type="date" class="form-control" id="fechaEnvio" required>
+                <label for="prioridad" class="form-label">Técnico</label>
+                <select class="form-select" id="prioridad" required>
+                    <option value="Phantom">Phantom</option>
+                    <option value="Jafet">Jafet</option>
+                    <option value="Luis">Luis</option>
+                    <option value="Erick">Erick</option>
+                    <option value="Yahir">Yahir</option>
+                    <option value="Cande">Cande</option>
+                </select>
             </div>
-
             <div class="mb-3">
                 <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
                 <input type="date" class="form-control" id="fechaRespuesta">
+            </div>
+            <div>
+                <button id="EnviarTecnico">Enviar al técnico</button>
             </div>
         </div>
     </div>
@@ -125,7 +131,7 @@
             celdaEstado.textContent = reporte.estado;
             celdaPrioridad.textContent = reporte.prioridad;
             celdaTecnico.textContent = reporte.tecnico;
-    
+
             fila.appendChild(celdaNombreCliente);
             fila.appendChild(celdaFallo);
             fila.appendChild(celdaEstado);
@@ -137,9 +143,9 @@
     }
 
     function editarReporte(reporte) {
-        
+
         EditarReporte.style.display = "block";
-        document.getElementById("estado").value = reporte.estado;
+        document.getElementById("estado").select.value = reporte.estado;
         document.getElementById("prioridad").value = reporte.prioridad;
         document.getElementById("fechaEnvio").value = reporte.fechaEnvio;
         document.getElementById("fechaRespuesta").value = reporte.fechaRespuesta;
