@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Geolocalización con SignalR";
+    ViewData["Title"] = "Raccoon Mobile service";
 }
 
 <!DOCTYPE html>
@@ -24,185 +24,192 @@
 </head>
 
 <body>
-    <h1>Raccoon Mobile service</h1>
     <div>
         <h2>¿Tienes problemas con tu línea?</h2>
+        <br>
         <div class="container">
             <div class="row">
-                <div id="button-container" class="col">
-                    <button class="btn btn-primary" id="Ubicacion">Reportar</button>
-                    <button class="btn btn-secondary" id="ReportarOtraLinea">Reportar otra linea</button>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="button-container" class="col">
+                                <button class="btn btn-primary" id="Ubicacion">Reportar</button>
+                                <button class="btn btn-secondary" id="ReportarOtraLinea">Reportar otra linea</button>
+                            </div>
+                        </div>
+                        <div id="form-container" class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div id="map" class="rounded-3"></div>
+                                </div>
+                                <div class="col-6">
+                                    <h2>Registro de Datos del Cliente</h2>
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
+                                            <input type="text" class="form-control" id="nombreCliente"
+                                                placeholder="Ingrese el nombre del cliente" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="fallo" class="form-label">Fallo</label>
+                                            <textarea class="form-control" id="fallo" rows="3"
+                                                placeholder="Describa el fallo" required></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" id="enviar">Registrar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
-        <br>
-        <div id="map" class="rounded-3"></div>
-        <div id="form-container" class="mt-5">
-            <h2>Registro de Datos del Cliente</h2>
-            <form>
-                <div class="mb-3">
-                    <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
-                    <input type="text" class="form-control" id="nombreCliente"
-                        placeholder="Ingrese el nombre del cliente" required>
-                </div>
+        <script>
+            const connection = new signalR.HubConnectionBuilder().withUrl("/reporteHub").build();
+            connection.start().then(() => {
+                console.log("Conexión exitosa");
+            }).catch((error) => {
+                console.log("Error al realizar la conexión: ", error);
+            });
+            let latitud;
+            let longitud;
+            const boton = document.getElementById("Ubicacion");
+            const otraLinea = document.getElementById("ReportarOtraLinea");
+            const enviar = document.getElementById("enviar");
+            const nombreCliente = document.getElementById("nombreCliente");
+            const fallo = document.getElementById("fallo");
+            const fecha = new Date().toLocaleString();
+            otraLinea.disabled = true;
+            let map;
+            let marker;
 
-                <div class="mb-3">
-                    <label for="fallo" class="form-label">Fallo</label>
-                    <textarea class="form-control" id="fallo" rows="3" placeholder="Describa el fallo"
-                        required></textarea>
-                </div>
-
-
-
-                <button type="button" class="btn btn-primary" id="enviar">Registrar</button>
-            </form>
-        </div>
-    </div>
-    <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/reporteHub").build();
-        connection.start().then(() => {
-            console.log("Conexión exitosa");
-        }).catch((error) => {
-            console.log("Error al realizar la conexión: ", error);
-        });
-        let latitud;
-        let longitud;
-        const boton = document.getElementById("Ubicacion");
-        const otraLinea = document.getElementById("ReportarOtraLinea");
-        const enviar = document.getElementById("enviar");
-        const nombreCliente = document.getElementById("nombreCliente");
-        const fallo = document.getElementById("fallo");
-        const fecha = new Date().toLocaleString();
-        otraLinea.disabled = true;
-        let map;
-        let marker;
-
-        function getubicacion() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, errorPosition);
-            } else {
-                alert("La geolocalización no es soportada por este navegador.");
+            function getubicacion() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, errorPosition);
+                } else {
+                    alert("La geolocalización no es soportada por este navegador.");
+                }
             }
-        }
 
-        boton.addEventListener("click", () => {
-            getubicacion();
-            boton.disabled = true;
-            otraLinea.disabled = false;
-            document.getElementById('form-container').style.display = 'block';
-        });
+            boton.addEventListener("click", () => {
+                getubicacion();
+                boton.disabled = true;
+                otraLinea.disabled = false;
+                document.getElementById('form-container').style.display = 'block';
+            });
 
-        otraLinea.addEventListener("click", () => {
-            if (marker) {
-                marker.remove();
-                marker = null;
+            otraLinea.addEventListener("click", () => {
+                if (marker) {
+                    marker.remove();
+                    marker = null;
+                }
+                map.on('click', onMapClick);
+            });
+
+            function showPosition(position) {
+                latitud = position.coords.latitude;
+                longitud = position.coords.longitude;
+
+                if (!map) {
+                    map = L.map('map').setView([latitud, longitud], 19);
+
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+                } else {
+                    map.setView([latitud, longitud], 19);
+                }
+                if (marker) {
+                    marker.remove();
+                }
+                marker = L.marker([latitud, longitud]).addTo(map)
+                    .bindPopup('Estas aquí')
+                    .openPopup();
             }
-            map.on('click', onMapClick);
-        });
 
-        function showPosition(position) {
-            latitud = position.coords.latitude;
-            longitud = position.coords.longitude;
+            function onMapClick(e) {
+                if (marker) {
+                    marker.remove();
+                }
+                marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
+                    .bindPopup('Nueva ubicación')
+                    .openPopup();
+                latitud = e.latlng.lat;
+                longitud = e.latlng.lng;
 
-            if (!map) {
-                map = L.map('map').setView([latitud, longitud], 19);
-
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-            } else {
-                map.setView([latitud, longitud], 19);
             }
-            if (marker) {
-                marker.remove();
+
+            function errorPosition(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert("El usuario no permitió la geolocalización");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert("La información de ubicación no está disponible");
+                        break;
+                    case error.TIMEOUT:
+                        alert("La solicitud para obtener la ubicación del usuario ha expirado");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        alert("Un error desconocido ocurrió");
+                        break;
+                }
             }
-            marker = L.marker([latitud, longitud]).addTo(map)
-                .bindPopup('Estas aquí')
-                .openPopup();
-        }
 
-        function onMapClick(e) {
-            if (marker) {
-                marker.remove();
-            }
-            marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
-                .bindPopup('Nueva ubicación')
-                .openPopup();
-            latitud = e.latlng.lat;
-            longitud = e.latlng.lng;
+            enviar.addEventListener("click", () => {
+                if (!nombreCliente.value || !fallo.value || longitud == null || latitud == null || !fecha) {
+                    alert("Por favor, complete todos los campos requeridos.");
 
-        }
-
-        function errorPosition(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("El usuario no permitió la geolocalización");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("La información de ubicación no está disponible");
-                    break;
-                case error.TIMEOUT:
-                    alert("La solicitud para obtener la ubicación del usuario ha expirado");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("Un error desconocido ocurrió");
-                    break;
-            }
-        }
-
-        enviar.addEventListener("click", () => {
-            if (!nombreCliente.value || !fallo.value || longitud == null || latitud == null || !fecha) {
-                alert("Por favor, complete todos los campos requeridos.");
-
-                return;
-            }
-            let reporte = {
-                id: 0,
-                nombreCliente: nombreCliente.value,
-                fallo: fallo.value,
-                longitud: longitud.toString(),
-                latitud: latitud.toString(),
-                estado: "Enviado",
-                prioridad: "NO ASIGNADA",
-                fechaEnvio: fecha,
-                fechaRespuesta: "NO ASIGNADA",
-                fechaResolucion: "NO ASIGNADA",
-                tecnico: "NO ASIGNADO"
-            };
+                    return;
+                }
+                let reporte = {
+                    id: 0,
+                    nombreCliente: nombreCliente.value,
+                    fallo: fallo.value,
+                    longitud: longitud.toString(),
+                    latitud: latitud.toString(),
+                    estado: "Enviado",
+                    prioridad: "NO ASIGNADA",
+                    fechaEnvio: fecha,
+                    fechaRespuesta: "NO ASIGNADA",
+                    fechaResolucion: "NO ASIGNADA",
+                    tecnico: "NO ASIGNADO"
+                };
 
 
 
 
-            fetch("http://localhost:5157/Transacciones/agregarReporte", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(reporte)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
+                fetch("http://localhost:5157/Transacciones/agregarReporte", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(reporte)
                 })
-                .then(json => {
-                    console.log(json);
-                    if (json.mensaje === "Reporte agregado") {
-                        alert("Reporte enviado exitosamente");
-                    } else {
-                        alert("Error al enviar el reporte: " + json.mensaje);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error al enviar el reporte:", error);
-                    alert("Error al enviar el reporte: " + error.message);
-                });
-            connection.invoke("SendReporte", "Logistica", reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
-        });
-            
-    </script>
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status} ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        console.log(json);
+                        if (json.mensaje === "Reporte agregado") {
+                            alert("Reporte enviado exitosamente");
+                        } else {
+                            alert("Error al enviar el reporte: " + json.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al enviar el reporte:", error);
+                        alert("Error al enviar el reporte: " + error.message);
+                    });
+                connection.invoke("SendReporte", "Logistica", reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
+            });
+
+        </script>
 </body>
 
 </html>
