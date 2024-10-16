@@ -17,6 +17,13 @@ namespace ExamenUnidad2.services
         public bool Actualizar(Reporte r);
 
         public Reporte obtenerReporte(int id);
+        public int obtenerReportesPendientes();
+
+        public int obtenerReportesEnProceso();
+
+        public int obtenerReportesResueltos();
+
+        public int obtenerReportesCancelados();
 
         
 }

@@ -5,27 +5,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExamenUnidad2.Controllers
 {
-    
+
     public class TransaccionesController : Controller
     {
         public readonly ITransacciones baseDatos;
 
-        public TransaccionesController(ITransacciones baseDatos){
+        public TransaccionesController(ITransacciones baseDatos)
+        {
             this.baseDatos = baseDatos;
         }
 
         [HttpGet]
-        public IActionResult getReportes(){
-            return Json(baseDatos.consultar()); 
+        public IActionResult getReportes()
+        {
+            return Json(baseDatos.consultar());
         }
 
         [HttpGet]
-        public IActionResult getReporte(int id){
+        public IActionResult getReporte(int id)
+        {
             return Json(baseDatos.obtenerReporte(id));
         }
 
         [HttpPost]
-        public IActionResult agregarReporte([FromBody] Reporte r){
+        public IActionResult agregarReporte([FromBody] Reporte r)
+        {
             if (r == null)
             {
                 return Json(new { mensaje = "Reporte no puede ser nulo" });
@@ -40,19 +44,44 @@ namespace ExamenUnidad2.Controllers
         }
 
         [HttpPost]
-        public IActionResult actualizarReporte([FromBody] Reporte r){
-            if(baseDatos.Actualizar(r)){
-                return Json(new {mensaje = "Reporte actualizado"});
+        public IActionResult actualizarReporte([FromBody] Reporte r)
+        {
+            if (baseDatos.Actualizar(r))
+            {
+                return Json(new { mensaje = "Reporte actualizado" });
             }
-            return Json(new {mensaje = "Reporte no encontrado"});
-        }   
-        [HttpPost]
-        public IActionResult eliminarReporte(int id){
-            Reporte r = baseDatos.obtenerReporte(id);
-            if(baseDatos.eliminar(id)){
-            return Json(new {mensaje = "Reporte eliminado:" });    
-            }
-            return Json(new {mensaje = "Reporte no encontrado"});
+            return Json(new { mensaje = "Reporte no encontrado" });
         }
-}
+        [HttpPost]
+        public IActionResult eliminarReporte(int id)
+        {
+            Reporte r = baseDatos.obtenerReporte(id);
+            if (baseDatos.eliminar(id))
+            {
+                return Json(new { mensaje = "Reporte eliminado:" });
+            }
+            return Json(new { mensaje = "Reporte no encontrado" });
+        }
+        [HttpGet]
+        public IActionResult getReportesPendientes()
+        {
+            return Json(baseDatos.obtenerReportesPendientes());
+        }
+        [HttpGet]
+        public IActionResult getReportesEnProceso()
+        {
+            return Json(baseDatos.obtenerReportesEnProceso());
+        }
+                [HttpGet]
+        public IActionResult getReportesResueltos()
+        {
+            return Json(baseDatos.obtenerReportesResueltos());
+        }
+        [HttpGet]
+               public IActionResult getReportesCancelados()
+        {
+            return Json(baseDatos.obtenerReportesCancelados());
+        }
+
+    }
 }

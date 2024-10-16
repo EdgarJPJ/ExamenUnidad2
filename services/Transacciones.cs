@@ -16,15 +16,15 @@ namespace ExamenUnidad2.services
             reportes = new List<Reporte>();
         }
 
-       public bool agregar(Reporte reporte)
-    {
-        if (reporte.Id == 0)
+        public bool agregar(Reporte reporte)
         {
-            reporte.Id = reportes.Count + 1;
+            if (reporte.Id == 0)
+            {
+                reporte.Id = reportes.Count + 1;
+            }
+            reportes.Add(reporte);
+            return true;
         }
-        reportes.Add(reporte);
-        return true;
-    }
         public List<Reporte> consultar()
         {
             return reportes;
@@ -55,6 +55,56 @@ namespace ExamenUnidad2.services
             }
             return false;
         }
+        public int obtenerReportesPendientes()
+        {
+            int contador = 0;
+            foreach (var reporte in reportes)
+            {
+                if (reporte.Estado == "pendiente")
+                {
+                    contador++;
+                }
+            }
+            return contador;
+        }
+        public int obtenerReportesEnProceso()
+        {
+            int contador = 0;
+            foreach (var reporte in reportes)
+            {
+                if (reporte.Estado == "pendiente")
+                {
+                    contador++;
+                }
+            }
+            return contador;
+        }
+        public int obtenerReportesResueltos()
+        {
+            int contador = 0;
+            foreach (var reporte in reportes)
+            {
+                if (reporte.Estado == "resuelto")
+                {
+                    contador++;
+
+                }
+
+            }
+            return contador;
+        }
+        public int obtenerReportesCancelados()
+        {
+            int contador = 0;
+            foreach (var reporte in reportes)
+            {
+                if (reporte.Estado == "cancelado")
+                {
+                    contador++;
+
+                }
+            }
+            return contador;
+        }
     }
 }
-
