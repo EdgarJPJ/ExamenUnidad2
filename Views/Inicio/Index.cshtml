@@ -180,36 +180,40 @@
 
 
 
-                fetch("http://localhost:5157/Transacciones/agregarReporte", {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(reporte)
+            fetch("http://localhost:5157/Transacciones/agregarReporte", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(reporte)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error: ${response.status} ${response.statusText}`);
-                        }
-                        return response.json();
-                    })
-                    .then(json => {
-                        console.log(json);
-                        if (json.mensaje === "Reporte agregado") {
-                            alert("Reporte enviado exitosamente");
-                        } else {
-                            alert("Error al enviar el reporte: " + json.mensaje);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error al enviar el reporte:", error);
-                        alert("Error al enviar el reporte: " + error.message);
-                    });
-                connection.invoke("SendReporte", "Logistica", reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
-            });
+                .then(json => {
+                    console.log(json);
+                    if (json.mensaje === "Reporte agregado") {
+                        alert("Reporte enviado exitosamente");
+                        document.getElementById('form-container').style.display = 'none';
+                        boton.disabled = false;
+                        nombreCliente.value = "";
+                        fallo.value = "";
+                    } else {
+                        alert("Error al enviar el reporte: " + json.mensaje);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al enviar el reporte:", error);
+                    alert("Error al enviar el reporte: " + error.message);
+                });
+            connection.invoke("SendReporte", "Logistica", reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
+        });
 
-        </script>
+    </script>
 </body>
 
 </html>

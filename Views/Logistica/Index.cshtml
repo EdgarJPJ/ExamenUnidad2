@@ -50,6 +50,14 @@
     }).catch(err => console.error(err.toString()));
 
     connection.on("RecibirReporte", (reporte) => {
-        console.log("Reporte: ", reporte);    
+       
+        if (reporte && reporte.nombreCliente
+            && reporte.fallo) {
+            const nombreCliente = reporte.nombreCliente;
+
+            alert("Nuevo Reporte de: " + nombreCliente + "\n"+"Con falla de: " + reporte.fallo);
+        } else {
+            console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
+        }
     });
 </script>
