@@ -20,47 +20,47 @@
         </div>
 
         <div class="col" id="EditarReporte">
-    <div class="mb-4">
-        <h1 class="text-center">Editar Reporte</h1>
-    </div>
-    <form class="p-4 border rounded shadow-sm bg-light">
-        <div class="mb-3">
-            <label for="estado" class="form-label">Estado</label>
-            <select class="form-select" id="estado" required>
-                <option value="pendiente">Pendiente</option>
-                <option value="en_proceso">En proceso</option>
-                <option value="resuelto">Resuelto</option>
-                <option value="cancelado">Cancelado</option>
-            </select>
+            <div class="mb-4">
+                <h1 class="text-center">Editar Reporte</h1>
+            </div>
+            <form class="p-4 border rounded shadow-sm bg-light">
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" required>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en_proceso">En proceso</option>
+                        <option value="resuelto">Resuelto</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="prioridad" class="form-label">Prioridad</label>
+                    <select class="form-select" id="prioridad" required>
+                        <option value="alta">Alta</option>
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="tecnico" class="form-label">Técnico</label>
+                    <select class="form-select" id="tecnico" required>
+                        <option value="Phantom">Phantom</option>
+                        <option value="Jafet">Jafet</option>
+                        <option value="Luis">Luis</option>
+                        <option value="Erick">Erick</option>
+                        <option value="Yahir">Yahir</option>
+                        <option value="Cande">Cande</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
+                    <input type="date" class="form-control" id="fechaRespuesta" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4" id="EnviarTecnico">Enviar al técnico</button>
+                </div>
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="prioridad" class="form-label">Prioridad</label>
-            <select class="form-select" id="prioridad" required>
-                <option value="alta">Alta</option>
-                <option value="media">Media</option>
-                <option value="baja">Baja</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="tecnico" class="form-label">Técnico</label>
-            <select class="form-select" id="tecnico" required>
-                <option value="Phantom">Phantom</option>
-                <option value="Jafet">Jafet</option>
-                <option value="Luis">Luis</option>
-                <option value="Erick">Erick</option>
-                <option value="Yahir">Yahir</option>
-                <option value="Cande">Cande</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
-            <input type="date" class="form-control" id="fechaRespuesta" required>
-        </div>
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary px-4" id="EnviarTecnico">Enviar al técnico</button>
-        </div>
-    </form>
-</div>
 
     </div>
 </div>
@@ -69,10 +69,10 @@
 
 
 <script>
-     let Reporte = null;
+    let Reporte = null;
     const EditarReporte = document.getElementById("EditarReporte");
-    const EnviarTecnico = document.getElementById("EnviarTecnico");   
-     EditarReporte.style.display = "none";
+    const EnviarTecnico = document.getElementById("EnviarTecnico");
+    EditarReporte.style.display = "none";
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
@@ -133,7 +133,7 @@
             botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i> Editar';
             botonEditar.className = "btn btn-success";
             botonEditar.addEventListener("click", () => {
-               Reporte = reporte;
+                Reporte = reporte;
                 EditarReporte.style.display = "block";
                 console.log("Reporte seleccionado:", Reporte);
             });
@@ -153,45 +153,44 @@
             tbodytablaReportes.appendChild(fila);
         });
     }
-EnviarTecnico.addEventListener('click', ()=>
-        {
-            const ReporteEdiar = Reporte;
-            console.log("Id"+ Reporte.id);
-            ReporteEdiar.estado = document.getElementById("estado").value;
-            ReporteEdiar.prioridad = document.getElementById("prioridad").value;
-            ReporteEdiar.tecnico = document.getElementById("tecnico").value;
-            ReporteEdiar.fechaRespuesta = document.getElementById("fechaRespuesta").value;
-            console.log("Reporte a enviar al técnico:", ReporteEdiar);
-            fetch("http://localhost:5157/Transacciones/actualizarReporte", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(Reporte)
+    EnviarTecnico.addEventListener('click', () => {
+        const ReporteEdiar = Reporte;
+        ReporteEdiar.estado = document.getElementById("estado").value;
+        ReporteEdiar.prioridad = document.getElementById("prioridad").value;
+        ReporteEdiar.tecnico = document.getElementById("tecnico").value;
+        ReporteEdiar.fechaRespuesta = document.getElementById("fechaRespuesta").value;
+        console.log("Reporte a enviar al técnico:", ReporteEdiar);
+        fetch("http://localhost:5157/Transacciones/actualizarReporte", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(Reporte)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(json => {
-            console.log(json);
-            if (json.mensaje === "Reporte actualizado") {
-                alert("Reporte editado exitosamente");
-                Reporte = null;
-                EditarReporte.style.display = "none";
-                llenarTabla();
-            } else {
-                alert("Error al editar el reporte: " + json.mensaje);
-            }
-        })
-        .catch(error => {
-            console.error("Error al editar el reporte:", error);
-            alert("Error al editar el reporte: " + error.message);
-        });
-
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(json => {
+                console.log(json);
+                if (json.mensaje === "Reporte actualizado") {
+                    alert("Reporte editado exitosamente");
+                    Reporte = null;
+                    EditarReporte.style.display = "none";
+                    llenarTabla();
+                    alert("Reporte enviado al técnico exitosamente");
+                    connection.invoke("SendReporte", "Tecnicos", ReporteEdiar).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
+                } else {
+                    alert("Error al editar el reporte: " + json.mensaje);
+                }
+            })
+            .catch(error => {
+                console.error("Error al editar el reporte:", error);
+                alert("Error al editar el reporte: " + error.message);
+            });
     });
 
 

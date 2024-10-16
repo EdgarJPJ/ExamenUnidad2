@@ -1,5 +1,4 @@
-
-<h1>Reportes</h1>
+<h1>Técnicos</h1>
 
 <div>
 
@@ -12,14 +11,23 @@
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
-
     connection.start().then(() => {
+        connection.invoke("AddToGroup", "Tecnicos").catch(err => console.error(err.toString()));
         console.log("Conexión exitosa");
-    }).catch((error) => {
-        console.log("Error al realizar la conexión: ", error);
-    });
-    
+    }).catch(err => console.error(err.toString()));
+
     connection.on("ReceiveReporte", (reporte) => {
         console.log("Reporte recibido: ", reporte);
+    });
+    connection.on("RecibirReporte", (reporte) => {
+
+        if (reporte && reporte.fallo) {
+            const nombreCliente = reporte.nombreCliente;
+            console.log("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
+            alert("Nuevo reporte de: " + reporte.fallo);
+            console.log(reporte);
+        } else {
+            console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
+        }
     });
 </script>
