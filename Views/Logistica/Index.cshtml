@@ -1,45 +1,63 @@
-
 <h1>Logistica de reportes</h1>
 
 <div>
+    <div class="row">
+        <div class="col">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Falla</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Tecnico</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaReportes">
 
-                    <div class="mb-3">
-                    <label for="estado" class="form-label">Estado</label>
-                    <select class="form-select" id="estado" required>
-                        <option selected disabled>Seleccione el estado</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En proceso</option>
-                        <option value="resuelto">Resuelto</option>
-                        <option value="cancelado">Cancelado</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="prioridad" class="form-label">Prioridad</label>
-                    <select class="form-select" id="prioridad" required>
-                        <option selected disabled>Seleccione la prioridad</option>
-                        <option value="alta">Alta</option>
-                        <option value="media">Media</option>
-                        <option value="baja">Baja</option>
-                    </select>
-                </div>
+                </tbody>
+            </table>
+        </div>
+        <div class="col" id="EditarReporte">
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-select" id="estado" required>
+                    <option selected disabled>Seleccione el estado</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en_proceso">En proceso</option>
+                    <option value="resuelto">Resuelto</option>
+                    <option value="cancelado">Cancelado</option>
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="fechaEnvio" class="form-label">Fecha de Envío</label>
-                    <input type="date" class="form-control" id="fechaEnvio" required>
-                </div>
+            <div class="mb-3">
+                <label for="prioridad" class="form-label">Prioridad</label>
+                <select class="form-select" id="prioridad" required>
+                    <option selected disabled>Seleccione la prioridad</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Media</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </div>
 
-                <div class="mb-3">
-                    <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
-                    <input type="date" class="form-control" id="fechaRespuesta">
-                </div>
+            <div class="mb-3">
+                <label for="fechaEnvio" class="form-label">Fecha de Envío</label>
+                <input type="date" class="form-control" id="fechaEnvio" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
+                <input type="date" class="form-control" id="fechaRespuesta">
+            </div>
+        </div>
+    </div>
 </div>
-
 
 <script src="~/js/signalR.js"></script>
 
 <script>
-    
+    const EditarReporte = document.getElementById("EditarReporte");
+    EditarReporte.style.display = "none";
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
@@ -50,14 +68,83 @@
     }).catch(err => console.error(err.toString()));
 
     connection.on("RecibirReporte", (reporte) => {
-       
+
         if (reporte && reporte.nombreCliente
             && reporte.fallo) {
             const nombreCliente = reporte.nombreCliente;
 
-            alert("Nuevo Reporte de: " + nombreCliente + "\n"+"Con falla de: " + reporte.fallo);
+            alert("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
         } else {
             console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
         }
     });
+    let reportes = [];
+
+    fetch("http://localhost:5157/Transacciones/GetReportes", {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            reportes = data;
+            console.log("Reportes obtenidos:", reportes);
+            llenarTabla();
+        })
+        .catch(error => {
+            console.error("Error al obtener los reportes:", error);
+        });
+
+    function llenarTabla() {
+        let tbodytablaReportes = document.getElementById("tablaReportes");
+        tbodytablaReportes.innerHTML = "";
+        reportes.forEach(reporte => {
+            let fila = document.createElement("tr");
+            let celdaNombreCliente = document.createElement("td");
+            let celdaFallo = document.createElement("td");
+            let celdaEstado = document.createElement("td");
+            let celdaPrioridad = document.createElement("td");
+            let celdaTecnico = document.createElement("td");
+            let celdaEditar = document.createElement("td");
+
+            let botonEditar = document.createElement("button");
+            botonEditar.textContent = "Editar";
+            botonEditar.addEventListener("click", () => {
+                editarReporte(reporte);
+            });
+            celdaEditar.appendChild(botonEditar);
+            celdaNombreCliente.textContent = reporte.nombreCliente;
+            celdaFallo.textContent = reporte.fallo;
+            celdaEstado.textContent = reporte.estado;
+            celdaPrioridad.textContent = reporte.prioridad;
+            celdaTecnico.textContent = reporte.tecnico;
+    
+            fila.appendChild(celdaNombreCliente);
+            fila.appendChild(celdaFallo);
+            fila.appendChild(celdaEstado);
+            fila.appendChild(celdaPrioridad);
+            fila.appendChild(celdaTecnico);
+            fila.appendChild(celdaEditar);
+            tbodytablaReportes.appendChild(fila);
+        });
+    }
+
+    function editarReporte(reporte) {
+        
+        EditarReporte.style.display = "block";
+        document.getElementById("estado").value = reporte.estado;
+        document.getElementById("prioridad").value = reporte.prioridad;
+        document.getElementById("fechaEnvio").value = reporte.fechaEnvio;
+        document.getElementById("fechaRespuesta").value = reporte.fechaRespuesta;
+    }
+
+
+
 </script>
