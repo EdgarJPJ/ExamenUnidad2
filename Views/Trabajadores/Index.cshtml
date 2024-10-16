@@ -1,12 +1,12 @@
 <h1>Técnicos</h1>
 
 <div class="row">
-    <div class="col">        
+    <div class="col">
     </div>
     <div class="col">
         <div>
-        <canvas id="myChart"></canvas>
-    </div>
+            <canvas id="myChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -15,7 +15,7 @@
 
 <script>
     const ctx = document.getElementById('myChart');
-        const data = {
+    const data = {
         labels: [
             'Resueltos'
 
@@ -34,7 +34,7 @@
     const myChart = new Chart(ctx, {
         type: 'bar',
         data: data,
-        
+
 
     });
     function obtenerReportes() {
@@ -54,14 +54,14 @@
             })
             .then(data => {
                 Data = data;
-                
-              
+
+
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
             });
     }
-        function obtenerReportesPendientes() {
+    function obtenerReportesPendientes() {
 
         fetch("http://localhost:5157/Transacciones/GetReportesPendientes", {
             method: "GET",
@@ -69,7 +69,73 @@
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             }
-        })  
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                myChart.data.datasets[0].data = [data];
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+    function obtenerReportesEnProceso() {
+
+        fetch("http://localhost:5157/Transacciones/GetReportesEnProceso", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                myChart.data.datasets[0].data = [data];
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+    function obtenerReportesResueltos() {
+
+        fetch("http://localhost:5157/Transacciones/GetReportesResueltos", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                myChart.data.datasets[0].data = [data];
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+    function obtenerReportesCancelados() {
+
+        fetch("http://localhost:5157/Transacciones/GetReportesCancelados", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -107,6 +173,6 @@
         }
     });
 
-obtenerReportes();
-obtenerReportesPendientes();
+    obtenerReportes();
+    obtenerReportesPendientes();
 </script>
