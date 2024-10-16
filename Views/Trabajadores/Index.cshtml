@@ -1,13 +1,47 @@
 <h1>Técnicos</h1>
 
-<div>
-
+<div class="row">
+    <div class="col">        
+    </div>
+    <div class="col">
+        <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    </div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/signalR.js"></script>
 
 <script>
+    const ctx = document.getElementById('myChart');
+        const data = {
+        labels: [
+            'Resuelto',
+            'Pendiente',
+            'En proceso',
+            "Cancelado"
+
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100,13],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+
+    });
+
+    
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
