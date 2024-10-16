@@ -39,7 +39,7 @@
             </div>
             <div class="mb-3">
                 <label for="prioridad" class="form-label">Técnico</label>
-                <select class="form-select" id="prioridad" required>
+                <select class="form-select" id="tecnico" required>
                     <option value="Phantom">Phantom</option>
                     <option value="Jafet">Jafet</option>
                     <option value="Luis">Luis</option>
@@ -62,7 +62,9 @@
 <script src="~/js/signalR.js"></script>
 
 <script>
+    let Reporte = null;
     const EditarReporte = document.getElementById("EditarReporte");
+    const EnviarTecnico = document.getElementById("EnviarTecnico");
     EditarReporte.style.display = "none";
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
@@ -123,7 +125,9 @@
             let botonEditar = document.createElement("button");
             botonEditar.textContent = "Editar";
             botonEditar.addEventListener("click", () => {
-                editarReporte(reporte);
+                Reporte = reporte;
+                EditarReporte.style.display = "block";
+                console.log("Reporte seleccionado:", Reporte);
             });
             celdaEditar.appendChild(botonEditar);
             celdaNombreCliente.textContent = reporte.nombreCliente;
@@ -141,15 +145,47 @@
             tbodytablaReportes.appendChild(fila);
         });
     }
+    EnviarTecnico.addEventListener('click', ()=>
+        {
+            const ReporteEdiar = Reporte;
+            console.log("Id"+ Reporte.id);
+            ReporteEdiar.estado = document.getElementById("estado").value;
+            ReporteEdiar.prioridad = document.getElementById("prioridad").value;
+            ReporteEdiar.tecnico = document.getElementById("tecnico").value;
+            ReporteEdiar.fechaRespuesta = document.getElementById("fechaRespuesta").value;
+            console.log("Reporte a enviar al técnico:", ReporteEdiar);
+            fetch("http://localhost:5157/Transacciones/actualizarReporte", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(Reporte)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(json => {
+            console.log(json);
+            if (json.mensaje === "Reporte actualizado") {
+                alert("Reporte editado exitosamente");
+                Reporte = null;
+                EditarReporte.style.display = "none";
+                llenarTabla();
+            } else {
+                alert("Error al editar el reporte: " + json.mensaje);
+            }
+        })
+        .catch(error => {
+            console.error("Error al editar el reporte:", error);
+            alert("Error al editar el reporte: " + error.message);
+        });
 
-    function editarReporte(reporte) {
+    });
 
-        EditarReporte.style.display = "block";
-        document.getElementById("estado").select.value = reporte.estado;
-        document.getElementById("prioridad").value = reporte.prioridad;
-        document.getElementById("fechaEnvio").value = reporte.fechaEnvio;
-        document.getElementById("fechaRespuesta").value = reporte.fechaRespuesta;
-    }
 
 
 
