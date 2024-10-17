@@ -1,258 +1,250 @@
-<!DOCTYPE html>
-<html lang="es">
+<h1 class="text-center my-4">Logística de reportes</h1>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logística de Reportes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</head>
+<div class="container">
+    <div class="row">
 
-<body>
+        <div class="col-md-7">
+            <table class="table table-striped table-hover table-bordered shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Falla</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Técnico</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaReportes">
 
-
-    <h1 class="text-center my-4">Logística de reportes</h1>
-
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-7">
-                <table class="table table-striped table-hover table-bordered shadow-sm">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nombre del Cliente</th>
-                            <th>Falla</th>
-                            <th>Estado</th>
-                            <th>Prioridad</th>
-                            <th>Técnico</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaReportes">
-
-                    </tbody>
-                </table>
-                <div class="my-4">
-                    <div class="chart-container" style="position: relative; height:300px; width:600px">
-                        <canvas id="MyChart"></canvas>
-                    </div>
+                </tbody>
+            </table>
+            <div class="my-4">
+                <div class="chart-container" style="position: relative; height:300px; width:600px">
+                    <canvas id="MyChart"></canvas>
                 </div>
-            </div>
-
-            <div class="col-md-5" id="EditarReporte">
-                <div class="mb-4 text-center">
-                    <h2>Editar Reporte</h2>
-                </div>
-                <form class="p-4 border rounded shadow-sm bg-light">
-                    <div class="mb-3">
-                        <label for="estado" class="form-label">Estado</label>
-                        <select class="form-select" id="estado" required>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En proceso">En proceso</option>
-                            <option value="Resuelto">Resuelto</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="prioridad" class="form-label">Prioridad</label>
-                        <select class="form-select" id="prioridad" required>
-                            <option value="Alta">Alta</option>
-                            <option value="Media">Media</option>
-                            <option value="Baja">Baja</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="tecnico" class="form-label">Técnico</label>
-                        <select class="form-select" id="tecnico" required>
-                            <option value="Phantom">Phantom</option>
-                            <option value="Jafet">Jafet</option>
-                            <option value="Luis">Luis</option>
-                            <option value="Erick">Erick</option>
-                            <option value="Yahir">Yahir</option>
-                            <option value="Cande">Cande</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
-                        <input type="date" class="form-control" id="fechaRespuesta" required>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary px-4" id="EnviarTecnico">Enviar al técnico</button>
-                        <button type="button" class="btn btn-danger px-4" id="Cancelar">Cancelar</button>
-                    </div>
-                </form>
             </div>
         </div>
+
+        <div class="col-md-5" id="EditarReporte">
+            <div class="mb-4 text-center">
+                <h2>Editar Reporte</h2>
+            </div>
+            <form class="p-4 border rounded shadow-sm bg-light">
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="Resuelto">Resuelto</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="prioridad" class="form-label">Prioridad</label>
+                    <select class="form-select" id="prioridad" required>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="tecnico" class="form-label">Técnico</label>
+                    <select class="form-select" id="tecnico" required>
+                        <option value="Phantom">Phantom</option>
+                        <option value="Jafet">Jafet</option>
+                        <option value="Luis">Luis</option>
+                        <option value="Erick">Erick</option>
+                        <option value="Yahir">Yahir</option>
+                        <option value="Cande">Cande</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaRespuesta" class="form-label">Fecha de Respuesta</label>
+                    <input type="date" class="form-control" id="fechaRespuesta" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4" id="EnviarTecnico">Enviar al técnico</button>
+                    <button type="button" class="btn btn-danger px-4" id="Cancelar">Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script src="~/js/signalR.js"></script>
-    
-
-    <script>
-
-        const ctx = document.getElementById('MyChart');
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["Número de reportes recibidos"],
-                datasets: [{
-                    label: 'Cantidad de Reportes',
-                    data: [0],
-                    backgroundColor: 'rgba(255, 165, 0, 0.6)',
-                    borderColor: 'rgba(255, 165, 0, 1)',
-
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        let Reporte = null;
-        const EditarReporte = document.getElementById("EditarReporte");
-        const EnviarTecnico = document.getElementById("EnviarTecnico");
-       const Cancelar = document.getElementById("Cancelar");
-        let reportes = [];
-        EditarReporte.style.display = "none";
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/ReporteHub")
-            .build();
-
-        function llenarTabla() {
-            let tbodytablaReportes = document.getElementById("tablaReportes");
-            tbodytablaReportes.innerHTML = "";
-            reportes.forEach(reporte => {
-                let fila = document.createElement("tr");
-                let celdaNombreCliente = document.createElement("td");
-                let celdaFallo = document.createElement("td");
-                let celdaEstado = document.createElement("td");
-                let celdaPrioridad = document.createElement("td");
-                let celdaTecnico = document.createElement("td");
-                let celdaEditar = document.createElement("td");
-                let botonEditar = document.createElement("button");
-
-                botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i> Editar';
-                botonEditar.className = "btn btn-success";
-
-                botonEditar.addEventListener("click", () => {
-                    Reporte = reporte;
-                    EditarReporte.style.display = "block";
-                    document.getElementById("fechaRespuesta").value = Reporte.fechaRespuesta;
-                });
-
-                celdaEditar.appendChild(botonEditar);
-                celdaNombreCliente.textContent = reporte.nombreCliente;
-                celdaFallo.textContent = reporte.fallo;
-                celdaEstado.textContent = reporte.estado;
-                celdaPrioridad.textContent = reporte.prioridad;
-                celdaTecnico.textContent = reporte.tecnico;
-
-                fila.appendChild(celdaNombreCliente);
-                fila.appendChild(celdaFallo);
-                fila.appendChild(celdaEstado);
-                fila.appendChild(celdaPrioridad);
-                fila.appendChild(celdaTecnico);
-                fila.appendChild(celdaEditar);
-                tbodytablaReportes.appendChild(fila);
-            });
-        }
-        
-
-
-        function obtenerReportes() {
-            fetch("http://localhost:5157/Transacciones/GetReportes", {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    reportes = data;
-                    myChart.data.datasets[0].data = [reportes.length];
-                    llenarTabla();
-                    myChart.update();
-                })
-                .catch(error => {
-                    console.error("Error al obtener los reportes:", error);
-                });
-        }
-
-
-        connection.start().then(() => {
-            connection.invoke("AddToGroup", "Logistica").catch(err => console.error(err.toString()));
-        }).catch(err => console.error(err.toString()));
-
-        connection.on("RecibirReporte", (reporte) => {
-            if (reporte && reporte.nombreCliente && reporte.fallo) {
-                const nombreCliente = reporte.nombreCliente;
-                alert("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
-                obtenerReportes();
-            }
-        });
-Cancelar.addEventListener('click', () => {
-
-    EditarReporte.style.display = "none";
- 
-    Reporte = null;
-    console.log("Formulario de edición cancelado.");
-});
-
-        EnviarTecnico.addEventListener('click', () => {
-            const ReporteEditar = Reporte;
-            ReporteEditar.estado = document.getElementById("estado").value;
-            ReporteEditar.prioridad = document.getElementById("prioridad").value;
-            ReporteEditar.tecnico = document.getElementById("tecnico").value;
-            ReporteEditar.fechaRespuesta = document.getElementById("fechaRespuesta").value;
-
-            fetch("http://localhost:5157/Transacciones/actualizarReporte", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(ReporteEditar)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(json => {
-                    if (json.mensaje === "Reporte actualizado") {
-                        alert("Reporte editado exitosamente");
-                        Reporte = null;
-                        EditarReporte.style.display = "none";
-                        llenarTabla();
-                        connection.invoke("SendReporte", "Tecnicos", json);
-                    } else {
-                        alert("Error al actualizar el reporte");
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-        });
-        
-
-        obtenerReportes();
-    </script>
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-</html>
+<script src="~/js/signalR.js"></script>
+
+
+<script>
+
+    const ctx = document.getElementById('MyChart');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Número de reportes recibidos"],
+            datasets: [{
+                label: 'Cantidad de Reportes',
+                data: [0],
+                backgroundColor: 'rgba(255, 165, 0, 0.6)',
+                borderColor: 'rgba(255, 165, 0, 1)',
+
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    let Reporte = null;
+    const EditarReporte = document.getElementById("EditarReporte");
+    const EnviarTecnico = document.getElementById("EnviarTecnico");
+    const Cancelar = document.getElementById("Cancelar");
+    let reportes = JSON.parse(localStorage.getItem('reportes'));
+    EditarReporte.style.display = "none";
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/ReporteHub")
+        .build();
+    function guardarReportesEnLocalStorage() {
+        localStorage.setItem('reportes', JSON.stringify(reportes));
+    }
+    function llenarTabla() {
+        let tbodytablaReportes = document.getElementById("tablaReportes");
+        tbodytablaReportes.innerHTML = "";
+        reportes.forEach(reporte => {
+            let fila = document.createElement("tr");
+            let celdaNombreCliente = document.createElement("td");
+            let celdaFallo = document.createElement("td");
+            let celdaEstado = document.createElement("td");
+            let celdaPrioridad = document.createElement("td");
+            let celdaTecnico = document.createElement("td");
+            let celdaEditar = document.createElement("td");
+            let botonEditar = document.createElement("button");
+
+            botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i> Editar';
+            botonEditar.className = "btn btn-success";
+
+            botonEditar.addEventListener("click", () => {
+                Reporte = reporte;
+                EditarReporte.style.display = "block";
+                document.getElementById("fechaRespuesta").value = Reporte.fechaRespuesta;
+            });
+
+            celdaEditar.appendChild(botonEditar);
+            celdaNombreCliente.textContent = reporte.nombreCliente;
+            celdaFallo.textContent = reporte.fallo;
+            celdaEstado.textContent = reporte.estado;
+            celdaPrioridad.textContent = reporte.prioridad;
+            celdaTecnico.textContent = reporte.tecnico;
+
+            fila.appendChild(celdaNombreCliente);
+            fila.appendChild(celdaFallo);
+            fila.appendChild(celdaEstado);
+            fila.appendChild(celdaPrioridad);
+            fila.appendChild(celdaTecnico);
+            fila.appendChild(celdaEditar);
+            tbodytablaReportes.appendChild(fila);
+        });
+    }
+
+
+
+    function obtenerReportes() {
+        fetch("http://localhost:5157/Transacciones/GetReportes", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                reportes = data;
+                myChart.data.datasets[0].data = [reportes.length];
+                llenarTabla();
+                myChart.update();
+                guardarReportesEnLocalStorage();
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+
+
+    connection.start().then(() => {
+        connection.invoke("AddToGroup", "Logistica").catch(err => console.error(err.toString()));
+    }).catch(err => console.error(err.toString()));
+
+    connection.on("RecibirReporte", (reporte) => {
+        if (reporte && reporte.nombreCliente && reporte.fallo) {
+            const nombreCliente = reporte.nombreCliente;
+            alert("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
+            obtenerReportes();
+        }
+    });
+    Cancelar.addEventListener('click', () => {
+
+        EditarReporte.style.display = "none";
+
+        Reporte = null;
+        console.log("Formulario de edición cancelado.");
+    });
+
+EnviarTecnico.addEventListener('click', () => {
+    const ReporteEditar = Reporte;
+    ReporteEditar.estado = document.getElementById("estado").value;
+    ReporteEditar.prioridad = document.getElementById("prioridad").value;
+    ReporteEditar.tecnico = document.getElementById("tecnico").value;
+    ReporteEditar.fechaRespuesta = document.getElementById("fechaRespuesta").value;
+
+    fetch("http://localhost:5157/Transacciones/actualizarReporte", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ReporteEditar)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(json => {
+            if (json.mensaje === "Reporte actualizado") {
+                alert("Reporte editado exitosamente");
+                for (let i = 0; i < reportes.length; i++) {
+                    if (reportes[i].id === ReporteEditar.id) {
+                        reportes[i] = ReporteEditar;
+                        break; 
+                    }
+                }
+                guardarReportesEnLocalStorage();
+                Reporte = null;
+                EditarReporte.style.display = "none";
+                llenarTabla();
+                connection.invoke("SendReporte", "Tecnicos", json);
+            } else {
+                alert("Error al actualizar el reporte");
+            } // Esta llave faltaba cerrar
+        })
+        .catch(error => console.error("Error:", error));
+});
+
+    obtenerReportes();
+</script>
