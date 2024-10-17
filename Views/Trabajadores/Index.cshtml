@@ -20,8 +20,10 @@
         <div>
             <canvas id="Estado"></canvas>
         </div>
-        <div>
-            <canvas id="Prioridad"></canvas>
+        <div class="col">
+            <div>
+                <canvas id="Prioridad"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -36,7 +38,7 @@
     const Prioridad = new Chart(ctx2, {
         type: 'bar',
         data: {
-            labels: [, 'Alta', 'Media', 'Baja'],
+            labels: ['Alta', 'Media', 'Baja'],
             datasets: [{
                 label: 'Prioridad de Reportes',
                 data: [0, 0, 0],
@@ -264,9 +266,10 @@
                 }
                 return response.json();
             })
-            .then(data => {
-                Prioridad.data.datasets[0].data = [data[0], data[1], data[2]];
-                Prioridad.update();
+            .then(Data => {
+                console.log(Data);
+                Prioridad.data.datasets[0].data = [Data[0], Data[1], Data[2]];
+                
 
             })
             .catch(error => {
@@ -298,6 +301,6 @@
     });
 
     obtenerReportes();
-    obtenerReportesEstado();
     obtenerReportesPrioridad();
+    obtenerReportesEstado();
 </script>
