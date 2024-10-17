@@ -7,6 +7,9 @@
         <div>
             <canvas id="Estado"></canvas>
         </div>
+        <div>
+            <canvas id="Prioridad"></canvas>
+        </div>
     </div>
 </div>
 </div>
@@ -16,6 +19,36 @@
 
 <script>
     const ctx = document.getElementById('Estado')
+    const ctx2 = document.getElementById('Prioridad')
+    const Prioridad = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [, 'Alta', 'Media', 'Baja'],
+            datasets: [{
+                label: 'Prioridad de Reportes',
+                data: [0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
     const Estado = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -88,13 +121,38 @@
             })
             .then(data => {
                 Estado.data.datasets[0].data= [data[0], data[1], data[2], data[3]];
-
+                Estado.update();
 
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
             });
     }
+        function obtenerReportesPrioridad() {
+
+        fetch("http://localhost:5157/Transacciones/getReportesPrioridad", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                Prioridad.data.datasets[0].data= [data[0], data[1], data[2]];
+                Prioridad.update();
+
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+
 
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
@@ -113,6 +171,7 @@
             const nombreCliente = reporte.nombreCliente;
             console.log("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
             alert("Nuevo reporte de: " + reporte.fallo);
+            Estado.update();
             console.log(reporte);
         } else {
             console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
@@ -121,5 +180,6 @@
 
 obtenerReportes();
 obtenerReportesEstado();
+obtenerReportesPrioridad();
 
 </script>
