@@ -61,14 +61,44 @@
                 </div>
             </form>
         </div>
-
+        <div>
+            <canvas id="MyChart"></canvas>
+        </div>
     </div>
 </div>
 
 <script src="~/js/signalR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 <script>
+    const ctx = document.getElementById('MyChart');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Numero de reportes recibidos"],
+            datasets: [{
+                label: 'Cantidad de Reportes',
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(90, 120, 100, 0.6)',
+                ],
+                borderColor: [
+                    'rgba(90, 120, 100, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
     let Reporte = null;
     const EditarReporte = document.getElementById("EditarReporte");
     const EnviarTecnico = document.getElementById("EnviarTecnico");
@@ -88,7 +118,6 @@
             let celdaPrioridad = document.createElement("td");
             let celdaTecnico = document.createElement("td");
             let celdaEditar = document.createElement("td");
-
             let botonEditar = document.createElement("button");
             botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i> Editar';
             botonEditar.className = "btn btn-success";
@@ -133,7 +162,10 @@
             .then(data => {
                 reportes = data;
                 console.log("Reportes obtenidos:", reportes);
+                myChart.data.datasets[0].data = [reportes.length];
                 llenarTabla();
+                myChart.update();
+
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
