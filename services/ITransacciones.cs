@@ -24,6 +24,11 @@ namespace ExamenUnidad2.services
         public int obtenerReportesResueltos();
 
         public int obtenerReportesCancelados();
+        public int[] obtenerReportesTotales();
+        public int obtenerReportesporPrioridadAlta();
+        public int obtenerReportesporPrioridadMedia();
+        public int obtenerReportesporPrioridadBaja();
+        public int[] obtenerReportesporPrioridad();
 
         
 }

@@ -5,99 +5,47 @@
     </div>
     <div class="col">
         <div>
-            <canvas id="Resueltos"></canvas>
-        </div>
-        <div>
-            <canvas id="Pendientes"></canvas>
-        </div>
-        <div>
-            <canvas id="EnProceso"></canvas>
-        </div>
-        <div>
-            <canvas id="Cancelados"></canvas>
+            <canvas id="Estado"></canvas>
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/signalR.js"></script>
 
 <script>
-    const ctxPendientes = document.getElementById('Pendientes');
-    const ctxEnProceso = document.getElementById('EnProceso');
-    const ctxResueltos = document.getElementById('Resueltos');
-    const ctxCancelados = document.getElementById('Cancelados');
-
-    const dataPendientes = {
-        labels: [
-            'Pendientes'
-        ],
-        datasets: [{
-            label: 'Reportes',
-            data: [],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-            ],
-            hoverOffset: 4
-        }]
-    };
-    const dataEnProceso = {
-        labels: [
-            'En Proceso'
-        ],
-        datasets: [{
-            label: 'Reportes',
-            data: [],
-            backgroundColor: [
-                'rgb(54, 162, 235)',
-            ],
-            hoverOffset: 4
-        }]
-    };
-    const dataResueltos = {
-        labels: [
-            'Resueltos'
-        ],
-        datasets: [{
-            label: 'Reportes',
-            data: [],
-            backgroundColor: [
-                'rgb(75, 192, 192)',
-            ],
-            hoverOffset: 4
-        }]
-    };
-    const dataCancelados = {
-        labels: [
-            'Cancelados'
-        ],
-        datasets: [{
-            label: 'Reportes',
-            data: [],
-            backgroundColor: [
-                'rgb(255, 206, 86)',
-            ],
-            hoverOffset: 4
-        }]
-    };    
-    const resueltos = new Chart(ctxResueltos, {
-        type: 'bar',
-        data: dataResueltos,
+    const ctx = document.getElementById('Estado')
+    const Estado = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Pendientes', 'En Proceso', 'Resueltos', 'Cancelados'],
+            datasets: [{
+                label: 'Estado de Reportes',
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
     });
-    const pendientes = new Chart(ctxPendientes, {
-        type: 'bar',
-        data: dataPendientes,
-    });
-    const enProceso = new Chart(ctxEnProceso, {
-        type: 'bar',
-        data: dataEnProceso,
-    });
-    const cancelados = new Chart(ctxCancelados, {
-        type: 'bar',
-        data: dataCancelados,
-    });
-
-
 
     function obtenerReportes() {
 
@@ -123,9 +71,9 @@
                 console.error("Error al obtener los reportes:", error);
             });
     }
-    function obtenerReportesPendientes() {
+    function obtenerReportesEstado() {
 
-        fetch("http://localhost:5157/Transacciones/GetReportesPendientes", {
+        fetch("http://localhost:5157/Transacciones/getReportesTotales", {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -139,74 +87,9 @@
                 return response.json();
             })
             .then(data => {
-                pendientes.data.datasets[0].data = [data];
-            })
-            .catch(error => {
-                console.error("Error al obtener los reportes:", error);
-            });
-    }
-    function obtenerReportesEnProceso() {
+                Estado.data.datasets[0].data= [data[0], data[1], data[2], data[3]];
 
-        fetch("http://localhost:5157/Transacciones/GetReportesEnProceso", {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                enProceso.data.datasets[0].data = [data];
-                
-            })
-            .catch(error => {
-                console.error("Error al obtener los reportes:", error);
-            });
-    }
-    function obtenerReportesResueltos() {
 
-        fetch("http://localhost:5157/Transacciones/GetReportesResueltos", {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                resueltos.data.datasets[0].data = [data];
-            })
-            .catch(error => {
-                console.error("Error al obtener los reportes:", error);
-            });
-    }
-    function obtenerReportesCancelados() {
-
-        fetch("http://localhost:5157/Transacciones/GetReportesCancelados", {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                cancelados.data.datasets[0].data = [data];
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -236,10 +119,7 @@
         }
     });
 
-    obtenerReportes();
-    obtenerReportesPendientes();
-    obtenerReportesCancelados();
-    obtenerReportesEnProceso();
-    obtenerReportesResueltos();
+obtenerReportes();
+obtenerReportesEstado();
 
 </script>

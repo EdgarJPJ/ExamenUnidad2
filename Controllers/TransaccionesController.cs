@@ -72,16 +72,43 @@ namespace ExamenUnidad2.Controllers
         {
             return Json(baseDatos.obtenerReportesEnProceso());
         }
-                [HttpGet]
+        [HttpGet]
         public IActionResult getReportesResueltos()
         {
             return Json(baseDatos.obtenerReportesResueltos());
         }
         [HttpGet]
-               public IActionResult getReportesCancelados()
+        public IActionResult getReportesCancelados()
         {
             return Json(baseDatos.obtenerReportesCancelados());
         }
+        [HttpGet]
+        public IActionResult getReportesTotales()
+        {
+            return Json(baseDatos.obtenerReportesTotales());
+        }
+        //por prioridad y todos los reportes
+        [HttpGet]
+        public IActionResult getReportesPrioridadAlta()
+        {
+            return Json(baseDatos.obtenerReportesporPrioridadAlta());
+        }
+        [HttpGet]
+        public IActionResult getReportesPrioridadMedia()
+        {
+            return Json(baseDatos.obtenerReportesporPrioridadMedia());
+        }
+        [HttpGet]
+        public IActionResult getReportesPrioridadBaja()
+        {
+            return Json(baseDatos.obtenerReportesporPrioridadBaja());
+        }
+        [HttpGet]
+        public IActionResult getReportesPrioridad()
+        {
+            return Json(baseDatos.obtenerReportesporPrioridad());
+        }
+
 
     }
 }
