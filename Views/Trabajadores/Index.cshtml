@@ -5,7 +5,16 @@
     </div>
     <div class="col">
         <div>
-            <canvas id="myChart"></canvas>
+            <canvas id="Resueltos"></canvas>
+        </div>
+        <div>
+            <canvas id="Pendientes"></canvas>
+        </div>
+        <div>
+            <canvas id="EnProceso"></canvas>
+        </div>
+        <div>
+            <canvas id="Cancelados"></canvas>
         </div>
     </div>
 </div>
@@ -14,29 +23,82 @@
 <script src="~/js/signalR.js"></script>
 
 <script>
-    const ctx = document.getElementById('myChart');
-    const data = {
+    const ctxPendientes = document.getElementById('Pendientes');
+    const ctxEnProceso = document.getElementById('EnProceso');
+    const ctxResueltos = document.getElementById('Resueltos');
+    const ctxCancelados = document.getElementById('Cancelados');
+
+    const dataPendientes = {
         labels: [
-            'Resueltos'
-
-
+            'Pendientes'
         ],
         datasets: [{
             label: 'Reportes',
             data: [],
             backgroundColor: [
                 'rgb(255, 99, 132)',
-
             ],
             hoverOffset: 4
         }]
     };
-    const myChart = new Chart(ctx, {
+    const dataEnProceso = {
+        labels: [
+            'En Proceso'
+        ],
+        datasets: [{
+            label: 'Reportes',
+            data: [],
+            backgroundColor: [
+                'rgb(54, 162, 235)',
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const dataResueltos = {
+        labels: [
+            'Resueltos'
+        ],
+        datasets: [{
+            label: 'Reportes',
+            data: [],
+            backgroundColor: [
+                'rgb(75, 192, 192)',
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const dataCancelados = {
+        labels: [
+            'Cancelados'
+        ],
+        datasets: [{
+            label: 'Reportes',
+            data: [],
+            backgroundColor: [
+                'rgb(255, 206, 86)',
+            ],
+            hoverOffset: 4
+        }]
+    };    
+    const resueltos = new Chart(ctxResueltos, {
         type: 'bar',
-        data: data,
-
-
+        data: dataResueltos,
     });
+    const pendientes = new Chart(ctxPendientes, {
+        type: 'bar',
+        data: dataPendientes,
+    });
+    const enProceso = new Chart(ctxEnProceso, {
+        type: 'bar',
+        data: dataEnProceso,
+    });
+    const cancelados = new Chart(ctxCancelados, {
+        type: 'bar',
+        data: dataCancelados,
+    });
+
+
+
     function obtenerReportes() {
 
         fetch("http://localhost:5157/Transacciones/GetReportes", {
@@ -77,7 +139,7 @@
                 return response.json();
             })
             .then(data => {
-                myChart.data.datasets[0].data = [data];
+                pendientes.data.datasets[0].data = [data];
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -99,7 +161,8 @@
                 return response.json();
             })
             .then(data => {
-                myChart.data.datasets[0].data = [data];
+                enProceso.data.datasets[0].data = [data];
+                
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -121,7 +184,7 @@
                 return response.json();
             })
             .then(data => {
-                myChart.data.datasets[0].data = [data];
+                resueltos.data.datasets[0].data = [data];
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -143,7 +206,7 @@
                 return response.json();
             })
             .then(data => {
-                myChart.data.datasets[0].data = [data];
+                cancelados.data.datasets[0].data = [data];
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -175,4 +238,8 @@
 
     obtenerReportes();
     obtenerReportesPendientes();
+    obtenerReportesCancelados();
+    obtenerReportesEnProceso();
+    obtenerReportesResueltos();
+
 </script>

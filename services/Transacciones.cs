@@ -60,7 +60,7 @@ namespace ExamenUnidad2.services
             int contador = 0;
             foreach (var reporte in reportes)
             {
-                if (reporte.Estado == "pendiente")
+                if (reporte.Estado == "Pendiente")
                 {
                     contador++;
                 }
@@ -72,7 +72,7 @@ namespace ExamenUnidad2.services
             int contador = 0;
             foreach (var reporte in reportes)
             {
-                if (reporte.Estado == "pendiente")
+                if (reporte.Estado == "En proceso")
                 {
                     contador++;
                 }
@@ -84,7 +84,7 @@ namespace ExamenUnidad2.services
             int contador = 0;
             foreach (var reporte in reportes)
             {
-                if (reporte.Estado == "resuelto")
+                if (reporte.Estado == "Resuelto")
                 {
                     contador++;
 
@@ -98,7 +98,7 @@ namespace ExamenUnidad2.services
             int contador = 0;
             foreach (var reporte in reportes)
             {
-                if (reporte.Estado == "cancelado")
+                if (reporte.Estado == "Cancelado")
                 {
                     contador++;
 

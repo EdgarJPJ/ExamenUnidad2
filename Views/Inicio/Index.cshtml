@@ -45,22 +45,40 @@
                                 </div>
                                 <div class="col-6">
                                     <h2 class="text-center ">Registro de Datos del Cliente</h2>
-                                        <form class="p-4 border rounded shadow-sm bg-light">
-                                            <div class="mb-3">
-                                                <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
-                                                <input type="text" class="form-control" id="nombreCliente"
-                                                    placeholder="Ingrese el nombre del cliente" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="fallo" class="form-label">Fallo</label>
-                                                <textarea class="form-control" id="fallo" rows="3"
-                                                    placeholder="Describa el fallo" required></textarea>
-                                            </div>
-                                            <div class="text-center">
-                                                <button type="button" class="btn btn-success px-4"
-                                                    id="enviar">Registrar</button>
-                                            </div>
-                                        </form>
+                                    <form class="p-4 border rounded shadow-sm bg-light">
+                                        <div class="mb-3">
+                                            <label  class="form-label">Nombre del Cliente</label>
+                                            <input type="text" class="form-control" id="nombreCliente"
+                                                placeholder="Ingrese el nombre del cliente" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div><label  class="form-label">Tipo de fallo</label></div>
+                                            <select id="tipoFallo" class="form-control">
+                                                <option >Selecciona el tipo de fallo</option>
+                                                <option value="sin señal">falta de señal</option>
+                                                <option value="llamadas caidas">llamadas caídas</option>
+                                                <option value="sin internet móvil">interrupción en el servicio de
+                                                    internet móvil</option>
+                                                <option value="sim no reconocida">sim card no reconocida</option>
+                                                <option value="conexion lenta inestable">conexión lenta o inestable
+                                                </option>
+                                                <option value="problema hardware telefono">problema con el teléfono
+                                                </option>
+                                                <option value="problema módem router">problema con el módem o router
+                                                </option>
+                                                <option value="corte energía">cortes de energía que afectan el servicio
+                                                </option>
+                                                <option value="interferencia o ruido">interferencias o ruido en las
+                                                    llamadas</option>
+                                                <option value="problema equipo red">problemas con el equipo de red
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-success px-4"
+                                                id="enviar">Registrar</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +100,7 @@
             const otraLinea = document.getElementById("ReportarOtraLinea");
             const enviar = document.getElementById("enviar");
             const nombreCliente = document.getElementById("nombreCliente");
-            const fallo = document.getElementById("fallo");
+            const fallo = document.getElementById("tipoFallo");
             const fecha = new Date().toLocaleString();
             otraLinea.disabled = true;
             let map;
