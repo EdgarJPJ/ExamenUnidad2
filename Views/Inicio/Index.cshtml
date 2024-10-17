@@ -1,29 +1,4 @@
-@{
-    ViewData["Title"] = "Raccoon Mobile service";
-}
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="~/js/signalR.js"></script>
-    <style>
-        #map {
-            height: 250px;
-            width: 100%;
-        }
-
-        #form-container {
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
-<body>
     <div>
         <h2>¿Tienes problemas con tu línea?</h2>
         <br>
@@ -47,14 +22,14 @@
                                     <h2 class="text-center ">Registro de Datos del Cliente</h2>
                                     <form class="p-4 border rounded shadow-sm bg-light">
                                         <div class="mb-3">
-                                            <label  class="form-label">Nombre del Cliente</label>
+                                            <label class="form-label">Nombre del Cliente</label>
                                             <input type="text" class="form-control" id="nombreCliente"
                                                 placeholder="Ingrese el nombre del cliente" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <div><label  class="form-label">Tipo de fallo</label></div>
+                                      <div class="mb-3">
+                                            <div><label class="form-label">Tipo de fallo</label></div>
                                             <select id="tipoFallo" class="form-control">
-                                                <option >Selecciona el tipo de fallo</option>
+                                                <option>Selecciona el tipo de fallo</option>
                                                 <option value="sin señal">falta de señal</option>
                                                 <option value="llamadas caidas">llamadas caídas</option>
                                                 <option value="sin internet móvil">interrupción en el servicio de
@@ -62,7 +37,7 @@
                                                 <option value="sim no reconocida">sim card no reconocida</option>
                                                 <option value="conexion lenta inestable">conexión lenta o inestable
                                                 </option>
-                                                <option value="problema hardware telefono">problema con el teléfono
+                                                <option value="problema hardware teléfono">problema con el teléfono
                                                 </option>
                                                 <option value="problema módem router">problema con el módem o router
                                                 </option>
@@ -236,6 +211,3 @@
             });
 
         </script>
-</body>
-
-</html>
