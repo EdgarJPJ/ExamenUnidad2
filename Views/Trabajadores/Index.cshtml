@@ -1,47 +1,101 @@
 <h1>Técnicos</h1>
 
 <div class="row">
-    <div class="col">        
+    <div class="col">
     </div>
     <div class="col">
         <div>
-        <canvas id="myChart"></canvas>
+            <canvas id="Estado"></canvas>
+        </div>
     </div>
-    </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/signalR.js"></script>
 
 <script>
-    const ctx = document.getElementById('myChart');
-        const data = {
-        labels: [
-            'Resuelto',
-            'Pendiente',
-            'En proceso',
-            "Cancelado"
-
-        ],
-        datasets: [{
-            label: 'My First Dataset',
-            data: [300, 50, 100,13],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)'
-            ],
-            hoverOffset: 4
-        }]
-    };
-    const myChart = new Chart(ctx, {
+    const ctx = document.getElementById('Estado')
+    const Estado = new Chart(ctx, {
         type: 'pie',
-        data: data,
-
+        data: {
+            labels: ['Pendientes', 'En Proceso', 'Resueltos', 'Cancelados'],
+            datasets: [{
+                label: 'Estado de Reportes',
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
     });
 
-    
+    function obtenerReportes() {
+
+        fetch("http://localhost:5157/Transacciones/GetReportes", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                Data = data;
+
+
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+    function obtenerReportesEstado() {
+
+        fetch("http://localhost:5157/Transacciones/getReportesTotales", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                Estado.data.datasets[0].data= [data[0], data[1], data[2], data[3]];
+
+
+            })
+            .catch(error => {
+                console.error("Error al obtener los reportes:", error);
+            });
+    }
+
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ReporteHub")
         .build();
@@ -64,4 +118,8 @@
             console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
         }
     });
+
+obtenerReportes();
+obtenerReportesEstado();
+
 </script>

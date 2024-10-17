@@ -27,18 +27,18 @@
                 <div class="mb-3">
                     <label for="estado" class="form-label">Estado</label>
                     <select class="form-select" id="estado" required>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En proceso</option>
-                        <option value="resuelto">Resuelto</option>
-                        <option value="cancelado">Cancelado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="Resuelto">Resuelto</option>
+                        <option value="Cancelado">Cancelado</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="prioridad" class="form-label">Prioridad</label>
                     <select class="form-select" id="prioridad" required>
-                        <option value="alta">Alta</option>
-                        <option value="media">Media</option>
-                        <option value="baja">Baja</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -95,7 +95,7 @@
             botonEditar.addEventListener("click", () => {
                 Reporte = reporte;
                 EditarReporte.style.display = "block";
-                 document.getElementById("fechaRespuesta").value // Establecer la fecha actual
+                 document.getElementById("fechaRespuesta").value = obtenerFechaActual(); // Establecer la fecha actual
                 console.log("Reporte seleccionado:", Reporte);
             });
             celdaEditar.appendChild(botonEditar);
@@ -114,13 +114,6 @@
             tbodytablaReportes.appendChild(fila);
         });
     }
-        function obtenerFechaActual() {
-            const hoy = new Date();
-            const dia = String(hoy.getDate()).padStart(2, '0');
-            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-            const anio = hoy.getFullYear();
-            return `${anio}-${mes}-${dia}`;
-        }
 
     function obtenerReportes() {
 
@@ -201,7 +194,7 @@
             });
     });
 
-    obtenerReportes();
+obtenerReportes();
 
 
 
