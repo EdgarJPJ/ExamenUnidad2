@@ -2,6 +2,19 @@
 
 <div class="row">
     <div class="col">
+        <div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Falla</th>
+                        <th>Prioridad</th>
+                        <th>Técnico</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaReportes">
+                </tbody>
+        </div>
     </div>
     <div class="col">
         <div>
@@ -80,6 +93,115 @@
         }
     });
 
+    function llenarTabla() {
+        let tbodytablaReportes = document.getElementById("tablaReportes");
+        tbodytablaReportes.innerHTML = "";
+        reportes.forEach(reporte => {
+            let fila = document.createElement("tr");
+            let celdaNombreCliente = document.createElement("td");
+            let celdaFallo = document.createElement("td");
+            let celdaPrioridad = document.createElement("td");
+            let celdaTecnico = document.createElement("td");
+            let celdaAceptar = document.createElement("td");
+            let botonAceptarReporte = document.createElement("button");
+            let celdaBotonTerminar = document.createElement("td");
+            let botonTerminarReporte = document.createElement("button");
+            botonTerminarReporte.style.display = "none";
+            botonAceptarReporte.innerHTML = '<i class="bi bi-pencil-square"></i> Iniciar reparación';
+            botonAceptarReporte.className = "btn btn-success";
+            botonAceptarReporte.addEventListener("click", () => {
+                let Reporte = reporte;
+                Reporte.estado = "En proceso";
+                botonAceptarReporte.disabled = true;
+                botonAceptarReporte.style.display = "none";
+                botonTerminarReporte.style.display = "block";
+                botonTerminarReporte.innerHTML = '<i class="bi bi-pencil-square"></i> Reparación terminada';
+                botonTerminarReporte.className = "btn btn-success";
+                botonTerminarReporte.addEventListener("click", () => {
+                    Reporte.estado = "Resuelto";
+                    botonAceptarReporte.disabled = true;
+                    botonAceptarReporte.style.display = "block";
+                    botonTerminarReporte.style.display = "none";
+
+                    fetch("http://localhost:5157/Transacciones/actualizarReporte", {
+                        method: "POST",
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(Reporte)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error: ${response.status} ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(json => {
+                            console.log(json);
+                            if (json.mensaje === "Reporte actualizado") {
+                                alert("Reparación terminada");
+                                Estado.update();
+                                connection.invoke("SendReporte", "Tecnicos", Reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
+                            } else {
+                                alert("Error al editar el reporte: " + json.mensaje);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error al editar el reporte:", error);
+                            alert("Error al editar el reporte: " + error.message);
+                        });
+                });
+
+
+                fetch("http://localhost:5157/Transacciones/actualizarReporte", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(Reporte)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status} ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        console.log(json);
+                        if (json.mensaje === "Reporte actualizado") {
+                            alert("Reparación iniciada");
+                            Estado.update();
+                            connection.invoke("SendReporte", "Tecnicos", Reporte).catch(err => console.error("Error al invocar SendReporte:", err.toString()));
+                        } else {
+                            alert("Error al editar el reporte: " + json.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al editar el reporte:", error);
+                        alert("Error al editar el reporte: " + error.message);
+                    });
+            });
+            celdaAceptar.appendChild(botonAceptarReporte);
+            celdaNombreCliente.textContent = reporte.nombreCliente;
+            celdaFallo.textContent = reporte.fallo;
+            celdaPrioridad.textContent = reporte.prioridad;
+            celdaTecnico.textContent = reporte.tecnico;
+            celdaBotonTerminar.appendChild(botonTerminarReporte);
+            fila.appendChild(celdaNombreCliente);
+            fila.appendChild(celdaFallo);
+            fila.appendChild(celdaPrioridad);
+            fila.appendChild(celdaTecnico);
+            fila.appendChild(celdaAceptar);
+            fila.appendChild(celdaBotonTerminar);
+            tbodytablaReportes.appendChild(fila);
+            obtenerReportesEstado();
+
+        });
+    }
+
+
     function obtenerReportes() {
 
         fetch("http://localhost:5157/Transacciones/GetReportes", {
@@ -96,9 +218,8 @@
                 return response.json();
             })
             .then(data => {
-                Data = data;
-
-
+                reportes = data;
+                llenarTabla();
             })
             .catch(error => {
                 console.error("Error al obtener los reportes:", error);
@@ -120,7 +241,7 @@
                 return response.json();
             })
             .then(data => {
-                Estado.data.datasets[0].data= [data[0], data[1], data[2], data[3]];
+                Estado.data.datasets[0].data = [data[0], data[1], data[2], data[3]];
                 Estado.update();
 
             })
@@ -128,7 +249,7 @@
                 console.error("Error al obtener los reportes:", error);
             });
     }
-        function obtenerReportesPrioridad() {
+    function obtenerReportesPrioridad() {
 
         fetch("http://localhost:5157/Transacciones/getReportesPrioridad", {
             method: "GET",
@@ -144,7 +265,7 @@
                 return response.json();
             })
             .then(data => {
-                Prioridad.data.datasets[0].data= [data[0], data[1], data[2]];
+                Prioridad.data.datasets[0].data = [data[0], data[1], data[2]];
                 Prioridad.update();
 
             })
@@ -171,15 +292,12 @@
             const nombreCliente = reporte.nombreCliente;
             console.log("Nuevo Reporte de: " + nombreCliente + "\n" + "Con falla de: " + reporte.fallo);
             alert("Nuevo reporte de: " + reporte.fallo);
-            Estado.update();
-            console.log(reporte);
         } else {
             console.error("El objeto reporte no contiene la propiedad nombreCliente o es nulo:", reporte);
         }
     });
 
-obtenerReportes();
-obtenerReportesEstado();
-obtenerReportesPrioridad();
-
+    obtenerReportes();
+    obtenerReportesEstado();
+    obtenerReportesPrioridad();
 </script>
